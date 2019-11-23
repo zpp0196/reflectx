@@ -1,0 +1,2 @@
+include ':demo', ':xposed', ':java', ':android', ':test', ':compiler'
+rootProject.name='reflectx'

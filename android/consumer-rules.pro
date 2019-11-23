@@ -1,0 +1,4 @@
+-keep class me.zpp0196.reflectx.**
+-keepclassmembers class me.zpp0196.reflectx.** {*;}
+-keep class **.*$Proxy
+-keepclassmembers class **.*$Proxy {*;}

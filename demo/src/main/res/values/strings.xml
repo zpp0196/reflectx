@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ReflectXDemo</string>
+    <string name="xposed_description">todo</string>
+</resources>
