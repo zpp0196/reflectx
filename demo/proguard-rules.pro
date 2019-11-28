@@ -22,5 +22,5 @@
 
 -keep class me.zpp0196.reflectx.demo.original.*
 -keepclassmembers class me.zpp0196.reflectx.demo.original.* {*;}
--keep @me.zpp0196.reflectx.proxy.Source class *
--keep @me.zpp0196.reflectx.proxy.Source class * {*;}
+#-keep @me.zpp0196.reflectx.proxy.Source class *
+#-keep @me.zpp0196.reflectx.proxy.Source class * {*;}
