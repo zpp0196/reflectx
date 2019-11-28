@@ -22,7 +22,7 @@ public interface IProxyClass extends IProxy {
      * 获取被代理的对象
      *
      * @param <T> 返回值类型
-     * @return BaseProxyClass#get()
+     * @return {@link BaseProxyClass#get()}
      */
     @Nullable
     <T> T get();
