@@ -126,8 +126,10 @@ public class ProxyBuilder {
      */
     public Object callback() {
         try {
+            Class<?> sourceInterface = ProxyClass.findClass(proxy, initialize, loader);
             ProxyCallbackHandler handler = new ProxyCallbackHandler(getOriginal());
-            return Proxy.newProxyInstance(proxy.getClassLoader(), new Class[]{proxy}, handler);
+            ClassLoader classLoader = sourceInterface.getClassLoader();
+            return Proxy.newProxyInstance(classLoader, new Class[]{sourceInterface}, handler);
         } catch (Throwable th) {
             throw new ReflectException(th);
         }

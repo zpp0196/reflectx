@@ -12,7 +12,7 @@ public interface IProxyCallback extends IProxy {
      * @return 动态代理生成的实现类
      */
     default Object proxy() {
-        return ProxyFactory.callback(ProxyClass.findClass(getClass().getInterfaces()[0]), this);
+        return ProxyFactory.callback(getProxyInterface(), this);
     }
 
     @Override

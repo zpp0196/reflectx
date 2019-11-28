@@ -117,8 +117,13 @@ public class BaseProxyClass implements IProxyClass {
                         return (T) method.invoke(null, args);
                     }
                     return (T) wrapper(method.invoke(mOriginal, args), returnType);
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    throw new ReflectException(e);
+                } catch (InvocationTargetException e) {
+                    if (e.getCause() != null) {
+                        throw new ReflectException(e.getCause());
+                    }
+                    throw new ReflectException(e);
                 }
             }
         }
