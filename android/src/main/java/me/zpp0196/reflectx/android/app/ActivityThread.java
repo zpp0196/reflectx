@@ -1,4 +1,4 @@
-package me.zpp0196.reflectx.android;
+package me.zpp0196.reflectx.android.app;
 
 import android.app.Application;
 
