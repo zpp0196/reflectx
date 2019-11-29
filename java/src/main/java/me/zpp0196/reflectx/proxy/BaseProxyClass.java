@@ -84,7 +84,7 @@ public class BaseProxyClass implements IProxyClass {
      * @param value {@link Field#set(Object, Object)}
      */
     protected void set(Class<?> type, String name, Object value) {
-        Reflect.on(mOriginal).set(type, name, value);
+        Reflect.on(mOriginal).set(ProxyClass.findClass(type), name, value);
     }
 
     /**
@@ -94,7 +94,7 @@ public class BaseProxyClass implements IProxyClass {
      * @return {@link Field#get(Object)}
      */
     protected <T> T get(Class<?> type, String name) {
-        return (T) wrapper(Reflect.on(mOriginal).get(type, name), type);
+        return (T) wrapper(Reflect.on(mOriginal).get(ProxyClass.findClass(type), name), type);
     }
 
     /**
@@ -143,9 +143,16 @@ public class BaseProxyClass implements IProxyClass {
         if (result != null) {
             String className = ProxyClass.getSourceName(expectType);
             Class<?> resultClass = result.getClass();
-            wrapper = wrapper && className.equals(resultClass.getName());
-            if (resultClass.isAssignableFrom(expectType) || resultClass.isPrimitive() || !wrapper) {
+            if (expectType.isAssignableFrom(resultClass) || resultClass.isPrimitive() || !wrapper) {
                 return result;
+            }
+            try {
+                Class<?> clz = resultClass.getClassLoader().loadClass(className);
+                if (!clz.isAssignableFrom(resultClass)) {
+                    return result;
+                }
+            } catch (ClassNotFoundException e) {
+                throw new ReflectException(e);
             }
         } else {
             wrapper = wrapper && expectType.isAssignableFrom(getClass());

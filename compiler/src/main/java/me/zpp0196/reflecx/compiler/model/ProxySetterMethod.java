@@ -7,8 +7,6 @@ import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 
-import me.zpp0196.reflectx.proxy.ProxyClass;
-
 /**
  * @author zpp0196
  */
@@ -26,8 +24,7 @@ public class ProxySetterMethod extends BaseProxyMethod {
         }
         VariableElement value = mElement.getParameters().get(0);
         String fieldName = value.getSimpleName().toString();
-        builder.addStatement("set($T.findClass($T.class),\"$L\",$L)",
-                ProxyClass.class, value, fieldName, fieldName);
+        builder.addStatement("set($T.class,\"$L\",$L)", value, fieldName, fieldName);
         Name qualifiedName = ((TypeElement) mElement.getEnclosingElement()).getQualifiedName();
         if (qualifiedName.contentEquals(mElement.getReturnType().toString())) {
             builder.addStatement("return this");

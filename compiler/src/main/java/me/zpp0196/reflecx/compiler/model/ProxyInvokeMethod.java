@@ -49,7 +49,7 @@ public class ProxyInvokeMethod extends BaseProxyMethod {
             }
             args = sb.toString();
         }
-        String statement = "call($T.findClass($L.class),\"$L\",$L)";
+        String statement = "call($L.class,\"$L\",$L)";
         Name qualifiedName = ((TypeElement) mElement.getEnclosingElement()).getQualifiedName();
         boolean isBuilder = qualifiedName.contentEquals(mElement.getReturnType().toString());
         if (!returnType.toString().equals("void") && !isBuilder) {
@@ -58,9 +58,9 @@ public class ProxyInvokeMethod extends BaseProxyMethod {
         if (returnType instanceof DeclaredType) {
             Element element = ((DeclaredType) returnType).asElement();
             TypeElement typeElement = (TypeElement) element;
-            builder.addStatement(statement, ProxyClass.class, typeElement.getQualifiedName(), methodName, args);
+            builder.addStatement(statement, typeElement.getQualifiedName(), methodName, args);
         } else {
-            builder.addStatement(statement, ProxyClass.class, returnType, methodName, args);
+            builder.addStatement(statement, returnType, methodName, args);
         }
         if (isBuilder) {
             builder.addStatement("return this");

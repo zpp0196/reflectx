@@ -5,7 +5,6 @@ import com.squareup.javapoet.MethodSpec;
 import javax.lang.model.element.Element;
 
 import me.zpp0196.reflectx.proxy.ProxyGetter;
-import me.zpp0196.reflectx.proxy.ProxyClass;
 
 /**
  * @author zpp0196
@@ -24,8 +23,7 @@ public class ProxyGetterMethod extends BaseProxyMethod {
             fieldName = mElement.getSimpleName().toString();
         }
         MethodSpec.Builder builder = super.buildMethodSpec();
-        builder.addStatement("return get($T.findClass($T.class),\"$L\")",
-                ProxyClass.class, mElement.getReturnType(), fieldName);
+        builder.addStatement("return get($T.class,\"$L\")", mElement.getReturnType(), fieldName);
         return builder;
     }
 }
