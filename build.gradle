@@ -3,8 +3,8 @@
 buildscript {
 
     ext {
-        version_code = 4
-        version_name = "0.0.4"
+        version_code = 5
+        version_name = "0.0.5"
         compile_sdk = 29
         build_tools = "29.0.2"
         min_sdk = 14

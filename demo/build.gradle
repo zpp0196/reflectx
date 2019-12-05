@@ -31,6 +31,6 @@ dependencies {
     implementation 'junit:junit:4.12'
     implementation project(path: ':xposed')
     annotationProcessor  project(path: ':compiler')
-//    implementation 'me.zpp0196:reflectx:0.0.2'
-//    annotationProcessor 'me.zpp0196.reflectx:compiler:0.0.2'
+//    implementation "me.zpp0196:reflectx:${version_name}"
+//    annotationProcessor "me.zpp0196.reflectx:compiler:${version_name}"
 }
