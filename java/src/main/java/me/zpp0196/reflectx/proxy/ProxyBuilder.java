@@ -2,7 +2,6 @@ package me.zpp0196.reflectx.proxy;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -138,20 +137,9 @@ public class ProxyBuilder {
     @SuppressWarnings("unchecked")
     private <P> P proxy0() {
         Object original = getOriginal();
-        String proxyName = proxy.getName();
-        Class<?> proxyClass = MAPPER.get(proxyName);
-        if (proxyClass == null) {
-            try {
-                proxyClass = Class.forName(proxyName + "$Proxy");
-                MAPPER.put(proxyName, proxyClass);
-            } catch (ClassNotFoundException e) {
-                throw new ReflectException(e);
-            }
-        }
+        Class<?> proxyClass = ProxyClass.getProxyImpl(proxy);
         return (P) Reflect.on(proxyClass).create(original, proxy).get();
     }
-
-    private static final HashMap<String, Class<?>> MAPPER = new HashMap<>();
 
     private Object getOriginal() {
         if (original == null) {

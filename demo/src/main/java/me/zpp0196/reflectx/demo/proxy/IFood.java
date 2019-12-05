@@ -1,5 +1,6 @@
 package me.zpp0196.reflectx.demo.proxy;
 
+import me.zpp0196.reflectx.Keep;
 import me.zpp0196.reflectx.proxy.IProxyCallback;
 import me.zpp0196.reflectx.proxy.ProxyGetter;
 import me.zpp0196.reflectx.proxy.ProxySetter;
@@ -18,6 +19,7 @@ public interface IFood {
 
     @Source("me.zpp0196.reflectx.demo.original.Food$EatingListener")
     interface EatingListener extends IProxyCallback {
+        @Keep
         void onFinishedEating(String name);
     }
 }

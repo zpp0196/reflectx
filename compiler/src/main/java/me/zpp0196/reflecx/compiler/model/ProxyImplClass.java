@@ -50,7 +50,7 @@ public class ProxyImplClass {
         }
     }
 
-    public JavaFile generateProxy(TypeName proxyClassImpl) {
+    public JavaFile generateProxy(TypeName proxyClassImpl, ProxyMappingClass proxyMappingClass) {
         String packageName = getPackageName(mClassElement);
         String className = getClassName(mClassElement, packageName);
         ClassName proxyClassName = ClassName.get(packageName, className);
@@ -58,27 +58,29 @@ public class ProxyImplClass {
                 className.replaceAll("\\$", "."));
         String proxyName = proxyClassName.simpleName() + "$Proxy";
 
-        TypeSpec.Builder classBuilder = TypeSpec.classBuilder(proxyName)
+        TypeSpec.Builder proxyClassBuilder = TypeSpec.classBuilder(proxyName)
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(sourceInterface);
         if (mClassElement.getInterfaces().size() > 0) {
             TypeMirror parent = mClassElement.getInterfaces().get(0);
             if (parent.toString().equals(IProxyClass.class.getName())) {
-                classBuilder.superclass(proxyClassImpl);
+                proxyClassBuilder.superclass(proxyClassImpl);
             } else {
                 String superClass = parent.toString() + "$Proxy";
                 String parentPackage = superClass.substring(0, superClass.lastIndexOf("."));
                 String parentClassName = superClass.substring(parentPackage.length() + 1);
-                classBuilder.superclass(ClassName.get(parentPackage, parentClassName));
+                proxyClassBuilder.superclass(ClassName.get(parentPackage, parentClassName));
             }
         } else {
-            classBuilder.superclass(proxyClassImpl);
+            proxyClassBuilder.superclass(proxyClassImpl);
         }
 
-        classBuilder.addMethods(buildConstructor(sourceInterface));
-        classBuilder.addMethods(buildMethods());
-        TypeSpec finderClass = classBuilder.build();
-        return JavaFile.builder(packageName, finderClass).build();
+        proxyClassBuilder.addMethods(buildConstructor(sourceInterface));
+        proxyClassBuilder.addMethods(buildMethods());
+        TypeSpec proxyClass = proxyClassBuilder.build();
+
+        proxyMappingClass.addMapping(sourceInterface.toString(), sourceInterface.toString() + "$Proxy");
+        return JavaFile.builder(packageName, proxyClass).build();
     }
 
     private List<MethodSpec> buildConstructor(ClassName proxyClass) {

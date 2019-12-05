@@ -2,6 +2,8 @@ package me.zpp0196.reflectx.proxy;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -12,7 +14,20 @@ import me.zpp0196.reflectx.util.ReflectException;
  */
 public class ProxyClass {
 
+    public interface IMapping {
+        Class<?> get(Class<?> proxy);
+    }
+
     private static ClassLoader sDefaultLoader = ProxyClass.class.getClassLoader();
+    public static final String DEFAULT_MAPPING = "me.zpp0196.reflectx.proxy.ProxyClass$Mapping";
+    private static Set<IMapping> sMappingList = new HashSet<>();
+
+    static {
+        try {
+            addMappingClass(DEFAULT_MAPPING);
+        } catch (Throwable ignore) {
+        }
+    }
 
     /**
      * 设置默认 ClassLoader
@@ -21,6 +36,23 @@ public class ProxyClass {
      */
     public static void setDefaultClassLoader(ClassLoader classLoader) {
         sDefaultLoader = classLoader;
+    }
+
+    /**
+     * 添加映射实现类
+     *
+     * @param mappingClass 映射类
+     * @see ProxyMapping
+     */
+    public static void addMappingClass(String... mappingClass) {
+        try {
+            for (String clazz : mappingClass) {
+                Class<?> clz = Class.forName(clazz);
+                sMappingList.add((IMapping) clz.newInstance());
+            }
+        } catch (Exception e) {
+            throw new ReflectException(e);
+        }
     }
 
     /**
@@ -88,6 +120,28 @@ public class ProxyClass {
     @Nonnull
     public static String getSourceName(@Nonnull Class<?> clazz) {
         return getSourceName0(clazz);
+    }
+
+    /**
+     * 获取代理接口的实现类
+     *
+     * @param proxy 代理接口
+     * @return 代理接口实现类
+     */
+    public static Class<?> getProxyImpl(@Nonnull Class<?> proxy) {
+        for (IMapping mapping : getMapping()) {
+            if (mapping.get(proxy) != null) {
+                return mapping.get(proxy);
+            }
+        }
+        throw new IllegalArgumentException(proxy + "$Proxy was not found");
+    }
+
+    private static Set<IMapping> getMapping() {
+        if (sMappingList.isEmpty()) {
+            throw new IllegalArgumentException("no mapping class was found");
+        }
+        return sMappingList;
     }
 
     @Nonnull

@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.lang.reflect.Proxy;
 
+import me.zpp0196.reflectx.android.IProxyMapping;
 import me.zpp0196.reflectx.android.app.ActivityManager;
 import me.zpp0196.reflectx.android.app.ActivityManagerNative;
 import me.zpp0196.reflectx.android.app.ActivityThread;
@@ -27,6 +28,7 @@ public class AndroidProxyTest {
     }
 
     public void testAll() {
+        ProxyClass.addMappingClass(IProxyMapping.MAPPING);
         testActivityThread();
         testProxyActivityManager();
     }

@@ -1,7 +1,5 @@
 package me.zpp0196.reflectx.demo.test;
 
-import androidx.annotation.Keep;
-
 import org.junit.Test;
 
 import java.util.List;
@@ -11,7 +9,9 @@ import me.zpp0196.reflectx.demo.proxy.IBird;
 import me.zpp0196.reflectx.demo.proxy.IFlightableProxy;
 import me.zpp0196.reflectx.demo.proxy.IFood;
 import me.zpp0196.reflectx.demo.proxy.IPerson;
+import me.zpp0196.reflectx.proxy.ProxyClass;
 import me.zpp0196.reflectx.proxy.ProxyFactory;
+import me.zpp0196.reflectx.proxy.ProxyMapping;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -19,7 +19,10 @@ import static org.junit.Assert.assertNull;
 /**
  * @author zpp0196
  */
+@ProxyMapping(JavaProxyTest.MAPPING)
 public class JavaProxyTest {
+
+    static final String MAPPING = "a.b.c.d";
 
     private static final String TOM = "Tom";
     private static final String JERRY = "Jerry";
@@ -36,6 +39,7 @@ public class JavaProxyTest {
 
     @Test
     public void testAll() {
+        ProxyClass.addMappingClass(MAPPING);
         testGetterAndSetter();
         testCallMethod();
         testUpdateOriginal();
@@ -75,14 +79,7 @@ public class JavaProxyTest {
         IFood fish = ProxyFactory.create(IFood.class);
         fish.name("fish");
         IPerson person = ProxyFactory.create(IPerson.class);
-        //noinspection Convert2Lambda
-        person.feed(cat, fish, new IFood.EatingListener() {
-            @Override
-            @Keep
-            public void onFinishedEating(String name) {
-                System.out.println(name + " eating finished");
-            }
-        });
+        person.feed(cat, fish, name -> System.out.println(name + " eating finished"));
         person.addPet(cat).addPet(jerry);
         List pets = person.getPets();
         /*List<IAnimal> pets = person.getPets2();
