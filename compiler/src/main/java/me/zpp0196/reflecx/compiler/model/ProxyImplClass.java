@@ -44,6 +44,9 @@ public class ProxyImplClass {
                 proxyMethods.add(new ProxySetterMethod(enclosedElement));
             } else if (enclosedElement.getAnnotation(ProxyGetter.class) != null) {
                 proxyMethods.add(new ProxyGetterMethod(enclosedElement));
+            } else if (enclosedElement.getModifiers().contains(Modifier.STATIC)){
+                //noinspection UnnecessaryContinue
+                continue;
             } else {
                 proxyMethods.add(new ProxyInvokeMethod(enclosedElement));
             }

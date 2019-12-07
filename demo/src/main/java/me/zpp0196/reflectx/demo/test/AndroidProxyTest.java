@@ -34,7 +34,7 @@ public class AndroidProxyTest {
     }
 
     public void testActivityThread() {
-        ActivityThread am = ProxyFactory.proxyClass(ActivityThread.class);
+        ActivityThread am = ActivityThread.proxy();
         // class android.app.ActivityThread
         log("ActivityThread.class", am);
         am = am.currentActivityThread();

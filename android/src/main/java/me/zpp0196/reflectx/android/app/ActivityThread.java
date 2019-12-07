@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.Nullable;
 
 import me.zpp0196.reflectx.proxy.IProxyClass;
+import me.zpp0196.reflectx.proxy.ProxyFactory;
 import me.zpp0196.reflectx.proxy.Source;
 
 /**
@@ -12,6 +13,12 @@ import me.zpp0196.reflectx.proxy.Source;
  */
 @Source("android.app.ActivityThread")
 public interface ActivityThread extends IProxyClass {
+
+    ActivityThread PROXY = ProxyFactory.proxyClass(ActivityThread.class);
+
+    static ActivityThread proxy() {
+        return PROXY;
+    }
 
     ActivityThread currentActivityThread();
 
