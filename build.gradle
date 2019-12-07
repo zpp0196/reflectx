@@ -3,8 +3,8 @@
 buildscript {
 
     ext {
-        version_code = 5
-        version_name = "0.0.5"
+        version_code = 6
+        version_name = "0.0.6"
         compile_sdk = 29
         build_tools = "29.0.2"
         min_sdk = 14
@@ -38,7 +38,7 @@ allprojects {
 subprojects {
     apply plugin: 'maven'
 
-    group = 'me.zpp0196'
+    group = 'me.zpp0196.reflectx'
 }
 
 task clean(type: Delete) {
