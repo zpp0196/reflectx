@@ -32,7 +32,7 @@ public class ProxyFactory {
      * @see ProxyBuilder#instance(Object...)
      */
     public static <P> P create(@Nonnull Class<P> proxy, Object... args) {
-        return create(proxy, proxy.getClassLoader(), args);
+        return create(proxy, ProxyClass.getClassLoader(), args);
     }
 
     /**
@@ -57,7 +57,7 @@ public class ProxyFactory {
      * @return 代理工具类
      */
     public static <P> P proxyClass(@Nonnull Class<P> proxy) {
-        return proxyClass(proxy, proxy.getClassLoader());
+        return proxyClass(proxy, ProxyClass.getClassLoader());
     }
 
     /**
@@ -74,7 +74,7 @@ public class ProxyFactory {
     }
 
     /**
-     * 创建指定对象的代理对象，缓存级别：持久
+     * 创建指定对象的代理对象
      *
      * @param <P>      代理接口类型
      * @param proxy    代理接口

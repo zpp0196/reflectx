@@ -101,7 +101,7 @@ public class ProxyWrapper {
             Class<?> proxyType = proxyTypes[i];
             Object arg = args[i];
 
-            if (proxyType != srcType || srcType.isPrimitive()) {
+            if (!srcType.isAssignableFrom(proxyType) || srcType.isPrimitive()) {
                 return false;
             }
             args[i] = converter.convert(srcType, proxyType, arg);

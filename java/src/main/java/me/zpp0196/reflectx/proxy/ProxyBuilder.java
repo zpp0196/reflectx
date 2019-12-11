@@ -99,6 +99,11 @@ public class ProxyBuilder {
         return original(instance).proxy0();
     }
 
+    /**
+     * 代理 Object
+     * @param <P> 代理接口类型
+     * @return 代理接口
+     */
     public <P> P object() {
         Class<?> originalClass = getOriginal().getClass();
         if (originalClass.isPrimitive()) {
@@ -108,7 +113,7 @@ public class ProxyBuilder {
     }
 
     /**
-     * 代理 Class 或 Object
+     * 代理 Class
      *
      * @param <P> 代理接口类型
      * @return 代理接口
