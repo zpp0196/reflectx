@@ -82,7 +82,7 @@ public class ProxyImplClass {
         proxyClassBuilder.addMethods(buildMethods());
         TypeSpec proxyClass = proxyClassBuilder.build();
 
-        proxyMappingClass.addMapping(sourceInterface.toString(), sourceInterface.toString() + "$Proxy");
+        proxyMappingClass.addMapping(sourceInterface.toString(), proxyClassName.toString() + "$Proxy");
         return JavaFile.builder(packageName, proxyClass).build();
     }
 
