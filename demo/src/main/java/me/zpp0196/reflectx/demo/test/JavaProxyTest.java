@@ -80,7 +80,12 @@ public class JavaProxyTest {
         fish.name("fish");
         IPerson person = ProxyFactory.create(IPerson.class);
         person.feed(cat, fish, name -> System.out.println(name + " eating finished"));
-        person.addPet(cat).addPet(jerry);
+
+        IFlightableProxy bird = ProxyFactory.create(IBird.class);
+        bird.as(IAnimal.class).setName(FLAPPY_BIRD);
+        bird.fly();
+
+        person.addPet(cat).addPet(jerry).addBirdPet(bird.as(IBird.class));
         List pets = person.getPets();
         /*List<IAnimal> pets = person.getPets2();
         for (IAnimal pet : pets) {
@@ -90,10 +95,6 @@ public class JavaProxyTest {
             IAnimal animal = ProxyFactory.proxyObject(IAnimal.class, pet);
             System.out.println("pet: " + animal.getName());
         }
-
-        IFlightableProxy bird = ProxyFactory.create(IBird.class);
-        bird.as(IAnimal.class).setName(FLAPPY_BIRD);
-        bird.fly();
     }
 
     @Test

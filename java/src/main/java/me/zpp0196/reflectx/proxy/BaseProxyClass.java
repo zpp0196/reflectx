@@ -3,12 +3,12 @@ package me.zpp0196.reflectx.proxy;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import me.zpp0196.reflectx.util.Reflect;
+import me.zpp0196.reflectx.util.IReflectUtils;
+import me.zpp0196.reflectx.util.ReflectUtils;
 import me.zpp0196.reflectx.util.ReflectException;
 
 /**
@@ -19,13 +19,18 @@ public class BaseProxyClass implements IProxyClass {
 
     protected Object mOriginal;
     protected Class<?> mClass;
-    protected boolean isClass;
     protected Class<?> mProxyInterface;
 
-    public BaseProxyClass(@Nonnull Object original, Class<?> proxyInterface) {
+    final BaseProxyClass init(@Nonnull Object original, Class<?> proxyInterface) {
         this.mOriginal = original;
         this.mProxyInterface = proxyInterface;
         setOriginalClass(original);
+        return this;
+    }
+
+    @Nonnull
+    public IReflectUtils getReflectUtils() {
+        return ReflectUtils.get();
     }
 
     @Override
@@ -49,8 +54,8 @@ public class BaseProxyClass implements IProxyClass {
         return mProxyInterface;
     }
 
-    private void setOriginalClass(@Nullable Object original) {
-        isClass = original instanceof Class<?>;
+    protected void setOriginalClass(@Nullable Object original) {
+        boolean isClass = original instanceof Class<?>;
         if (original == null) {
             mClass = null;
             return;
@@ -70,7 +75,7 @@ public class BaseProxyClass implements IProxyClass {
         } else {
             mOriginal = surrogate;
         }
-        setOriginalClass(surrogate);
+        setOriginalClass(mOriginal);
     }
 
     @Override
@@ -79,56 +84,78 @@ public class BaseProxyClass implements IProxyClass {
     }
 
     /**
-     * @param type  {@link Field#getType()}
-     * @param name  {@link Field#getName()}
-     * @param value {@link Field#set(Object, Object)}
+     * @param fieldType {@link Field#getType()}
+     * @param fieldName {@link Field#getName()}
+     * @param value     {@link Field#set(Object, Object)}
      */
-    protected void set(Class<?> type, String name, Object value) {
-        Reflect.on(mOriginal).set(ProxyClass.findClass(type), name, value);
+    protected final void set(Class<?> fieldType, String fieldName, Object value) {
+        try {
+            getReflectUtils()
+                    .findFieldExact(getSourceClass(), getOriginalClass(fieldType), fieldName)
+                    .set(get(), value);
+        } catch (IllegalAccessException e) {
+            throw new ReflectException(e);
+        }
     }
 
     /**
-     * @param type {@link Field#getType()}
-     * @param name {@link Field#getName()}
-     * @param <T>  字段值的类型
+     * @param fieldType {@link Field#getType()}
+     * @param fieldName {@link Field#getName()}
+     * @param <T>       字段值的类型
      * @return {@link Field#get(Object)}
      */
-    protected <T> T get(Class<?> type, String name) {
-        return (T) wrapper(Reflect.on(mOriginal).get(ProxyClass.findClass(type), name), type);
+    protected final <T> T get(Class<?> fieldType, String fieldName) {
+        if (fieldType == void.class) {
+            return null;
+        }
+        try {
+            return (T) wrapper(getReflectUtils()
+                    .findFieldExact(getSourceClass(), getOriginalClass(fieldType), fieldName)
+                    .get(get()), fieldType);
+        } catch (IllegalAccessException e) {
+            throw new ReflectException(e);
+        }
     }
 
     /**
-     * @param returnType {@link Method#getReturnType()}
-     * @param name       {@link Method#getName()}
-     * @param args       方法参数
-     * @param <T>        方法调用结果类型
+     * @param returnType     {@link Method#getReturnType()}
+     * @param methodName     {@link Method#getName()}
+     * @param parameterTypes {@link Method#getParameterTypes()}
+     * @param args           方法参数
+     * @param <T>            方法调用结果类型
      * @return {@link Method#invoke(Object, Object...)}
      */
-    protected <T> T call(Class<?> returnType, String name, Object... args) {
-        for (Method method : mClass.getDeclaredMethods()) {
-            if (!method.getName().equals(name)) {
-                continue;
-            }
-            ProxyWrapper wrapper = new ProxyWrapper(method.getParameterTypes(), args);
-            if (wrapper.unwrap()) {
-                method.setAccessible(true);
-                try {
-                    if (isClass) {
-                        return (T) method.invoke(null, args);
-                    }
-                    return (T) wrapper(method.invoke(mOriginal, args), returnType);
-                } catch (IllegalAccessException e) {
-                    throw new ReflectException(e);
-                } catch (InvocationTargetException e) {
-                    if (e.getCause() != null) {
-                        throw new ReflectException(e.getCause());
-                    }
-                    throw new ReflectException(e);
+    protected final <T> T call(Class<?> returnType, String methodName,
+            @Nullable Class<?>[] parameterTypes, @Nullable Object... args) {
+        try {
+            Class<?>[] types = null;
+            if (parameterTypes != null) {
+                types = new Class[parameterTypes.length];
+                for (int i = 0; i < parameterTypes.length; i++) {
+                    types[i] = getOriginalClass(parameterTypes[i]);
                 }
+                new ProxyWrapper(types, args).unwrap();
             }
+            Method method;
+            Class<?> target = getSourceClass();
+            try {
+                method = getReflectUtils()
+                        .findMethodExact(target, getOriginalClass(returnType), methodName, types);
+            } catch (Throwable th) {
+                if (!returnType.isAssignableFrom(getClass())) {
+                    throw th;
+                }
+                method = getReflectUtils()
+                        .findMethodExact(target, void.class, methodName, types);
+            }
+            return (T) wrapper(method.invoke(get(), args), returnType);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new ReflectException(e);
         }
-        String types = Arrays.toString(ProxyWrapper.getProxyTypes(args));
-        throw new ReflectException(new NoSuchMethodException(mClass.getName() + "#" + name + "(" + types + ")"));
+    }
+
+    protected Class<?> getOriginalClass(Class<?> proxy) {
+        return ProxyClass.findClass(proxy);
     }
 
     /**

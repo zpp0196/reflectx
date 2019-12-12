@@ -78,23 +78,11 @@ public class ProxyImplClass {
             proxyClassBuilder.superclass(proxyClassImpl);
         }
 
-        proxyClassBuilder.addMethods(buildConstructor(sourceInterface));
         proxyClassBuilder.addMethods(buildMethods());
         TypeSpec proxyClass = proxyClassBuilder.build();
 
         proxyMappingClass.addMapping(sourceInterface.toString(), proxyClassName.toString() + "$Proxy");
         return JavaFile.builder(packageName, proxyClass).build();
-    }
-
-    private List<MethodSpec> buildConstructor(ClassName proxyClass) {
-        List<MethodSpec> methods = new ArrayList<>();
-        MethodSpec.Builder builder = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(TypeName.OBJECT, "o")
-                .addParameter(TypeName.get(Class.class), "c");
-        builder.addStatement("super(o,$T.class)", proxyClass);
-        methods.add(builder.build());
-        return methods;
     }
 
     private List<MethodSpec> buildMethods() {

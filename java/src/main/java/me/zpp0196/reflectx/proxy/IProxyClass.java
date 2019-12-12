@@ -1,7 +1,5 @@
 package me.zpp0196.reflectx.proxy;
 
-import javax.annotation.Nullable;
-
 /**
  * 提供代理接口的一些默认实现
  *
@@ -24,7 +22,6 @@ public interface IProxyClass extends IProxy {
      * @param <T> 返回值类型
      * @return {@link BaseProxyClass#get()}
      */
-    @Nullable
     <T> T get();
 
     /**

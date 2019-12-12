@@ -6,8 +6,8 @@ import java.lang.reflect.Proxy;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import me.zpp0196.reflectx.util.Reflect;
 import me.zpp0196.reflectx.util.ReflectException;
+import me.zpp0196.reflectx.util.ReflectUtils;
 
 /**
  * @author zpp0196
@@ -86,8 +86,7 @@ public class ProxyBuilder {
             for (Constructor<?> constructor : sourceClass.getDeclaredConstructors()) {
                 ProxyWrapper wrapper = new ProxyWrapper(constructor.getParameterTypes(), args);
                 if (wrapper.unwrap()) {
-                    constructor.setAccessible(true);
-                    instance = constructor.newInstance(args);
+                    instance = ReflectUtils.get().accessible(constructor).newInstance(args);
                 }
             }
             if (instance == null) {
@@ -142,8 +141,12 @@ public class ProxyBuilder {
     @SuppressWarnings("unchecked")
     private <P> P proxy0() {
         Object original = getOriginal();
-        Class<?> proxyClass = ProxyClass.getProxyImpl(proxy);
-        return (P) Reflect.on(proxyClass).create(original, proxy).get();
+        Class<? extends BaseProxyClass> proxyClass = ProxyClass.getProxyImpl(proxy);
+        try {
+            return (P) proxyClass.newInstance().init(original, proxy);
+        } catch (Exception e) {
+            throw new ReflectException(e);
+        }
     }
 
     private Object getOriginal() {

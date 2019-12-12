@@ -1,11 +1,14 @@
 package me.zpp0196.reflecx.compiler.model;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.WildcardTypeName;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,6 +18,7 @@ import javax.annotation.processing.Filer;
 import javax.lang.model.element.Modifier;
 
 import me.zpp0196.reflectx.Keep;
+import me.zpp0196.reflectx.proxy.BaseProxyClass;
 import me.zpp0196.reflectx.proxy.ProxyClass;
 
 public class ProxyMappingClass {
@@ -24,7 +28,6 @@ public class ProxyMappingClass {
 
     public ProxyMappingClass(String proxyMapping) {
         mClassName = proxyMapping;
-        System.out.println(mClassName);
     }
 
     public void addMapping(String sourceInterface, String proxyName) {
@@ -39,7 +42,11 @@ public class ProxyMappingClass {
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(ProxyClass.IMapping.class);
 
-        FieldSpec mapField = FieldSpec.builder(ParameterizedTypeName.get(Map.class, Class.class, Class.class), "m")
+        ParameterizedTypeName baseProxyClass = ParameterizedTypeName.get(ClassName.get(Class.class),
+                WildcardTypeName.subtypeOf(TypeName.get(BaseProxyClass.class)));
+
+        FieldSpec mapField = FieldSpec.builder(ParameterizedTypeName.get(ClassName.get(Map.class),
+                ClassName.get(Class.class), baseProxyClass), "m")
                 .initializer("new $T<>()", HashMap.class)
                 .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
                 .build();
@@ -53,7 +60,7 @@ public class ProxyMappingClass {
 
         MethodSpec getMethod = MethodSpec.methodBuilder("get")
                 .addAnnotation(Override.class)
-                .returns(Class.class)
+                .returns(baseProxyClass)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(Class.class, "proxy")
                 .addStatement("return m.get(proxy)")

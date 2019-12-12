@@ -15,7 +15,7 @@ import me.zpp0196.reflectx.util.ReflectException;
 public class ProxyClass {
 
     public interface IMapping {
-        Class<?> get(Class<?> proxy);
+        Class<? extends BaseProxyClass> get(Class<?> proxy);
     }
 
     private static ClassLoader sDefaultLoader = ProxyClass.class.getClassLoader();
@@ -99,7 +99,7 @@ public class ProxyClass {
      */
     @Nonnull
     public static Class<?> findClass(Class<?> proxy, boolean initialize, ClassLoader loader) {
-        if (proxy == void.class) {
+        if (proxy == void.class || proxy.isPrimitive()) {
             return proxy;
         }
         String className = getSourceName(proxy);
@@ -128,7 +128,7 @@ public class ProxyClass {
      * @param proxy 代理接口
      * @return 代理接口实现类
      */
-    public static Class<?> getProxyImpl(@Nonnull Class<?> proxy) {
+    public static Class<? extends BaseProxyClass> getProxyImpl(@Nonnull Class<?> proxy) {
         for (IMapping mapping : getMapping()) {
             if (mapping.get(proxy) != null) {
                 return mapping.get(proxy);

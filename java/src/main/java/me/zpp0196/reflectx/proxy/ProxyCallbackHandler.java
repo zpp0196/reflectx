@@ -6,6 +6,8 @@ import java.lang.reflect.Method;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import me.zpp0196.reflectx.util.ReflectUtils;
+
 /**
  * @author zpp0196
  */
@@ -28,8 +30,7 @@ class ProxyCallbackHandler implements InvocationHandler {
             }
             ProxyWrapper wrapper = new ProxyWrapper(stubMethod, proxyMethod, args);
             if (wrapper.wrapper()) {
-                proxyMethod.setAccessible(true);
-                return proxyMethod.invoke(mProxyImpl, args);
+                return ReflectUtils.get().accessible(proxyMethod).invoke(mProxyImpl, args);
             }
         }
         return stubMethod.invoke(mProxyImpl, args);
