@@ -65,13 +65,6 @@ public class ReflectUtils implements IReflectUtils {
     @Override
     @Nonnull
     public <T extends AccessibleObject> T accessible(@Nonnull T accessible) {
-        if (accessible instanceof Member) {
-            Member member = (Member) accessible;
-            if (Modifier.isPublic(member.getModifiers()) &&
-                    Modifier.isPublic(member.getDeclaringClass().getModifiers())) {
-                return accessible;
-            }
-        }
         if (!accessible.isAccessible()) {
             accessible.setAccessible(true);
         }
