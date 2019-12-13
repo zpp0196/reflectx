@@ -17,7 +17,10 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 
+import me.zpp0196.reflectx.proxy.ConstructorGetter;
+import me.zpp0196.reflectx.proxy.FieldGetter;
 import me.zpp0196.reflectx.proxy.IProxyClass;
+import me.zpp0196.reflectx.proxy.MethodGetter;
 import me.zpp0196.reflectx.proxy.ProxyGetter;
 import me.zpp0196.reflectx.proxy.ProxySetter;
 
@@ -36,19 +39,25 @@ public class ProxyImplClass {
         this.mClassElement = (TypeElement) element;
         this.proxyMethods = new LinkedList<>();
         this.mElements = elements;
-        for (Element enclosedElement : element.getEnclosedElements()) {
-            if (enclosedElement.getKind() != ElementKind.METHOD) {
+        for (Element methodElement : element.getEnclosedElements()) {
+            if (methodElement.getKind() != ElementKind.METHOD) {
                 continue;
             }
-            if (enclosedElement.getAnnotation(ProxySetter.class) != null) {
-                proxyMethods.add(new ProxySetterMethod(enclosedElement));
-            } else if (enclosedElement.getAnnotation(ProxyGetter.class) != null) {
-                proxyMethods.add(new ProxyGetterMethod(enclosedElement));
-            } else if (enclosedElement.getModifiers().contains(Modifier.STATIC)){
+            if (methodElement.getAnnotation(ProxySetter.class) != null) {
+                proxyMethods.add(new ProxySetterMethod(methodElement));
+            } else if (methodElement.getAnnotation(ProxyGetter.class) != null) {
+                proxyMethods.add(new ProxyGetterMethod(methodElement));
+            } else if (methodElement.getAnnotation(FieldGetter.class) != null) {
+                proxyMethods.add(new FieldInfoMethod(methodElement));
+            } else if (methodElement.getAnnotation(MethodGetter.class) != null) {
+                proxyMethods.add(new MethodInfoMethod(methodElement));
+            } else if (methodElement.getAnnotation(ConstructorGetter.class) != null) {
+                proxyMethods.add(new ConstructorInfoMethod(methodElement));
+            } else if (methodElement.getModifiers().contains(Modifier.STATIC)) {
                 //noinspection UnnecessaryContinue
                 continue;
             } else {
-                proxyMethods.add(new ProxyInvokeMethod(enclosedElement));
+                proxyMethods.add(new ProxyInvokeMethod(methodElement));
             }
         }
     }

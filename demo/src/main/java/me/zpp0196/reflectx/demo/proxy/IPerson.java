@@ -3,7 +3,7 @@ package me.zpp0196.reflectx.demo.proxy;
 import java.util.List;
 
 import me.zpp0196.reflectx.proxy.IProxyClass;
-import me.zpp0196.reflectx.proxy.MemberParameters;
+import me.zpp0196.reflectx.proxy.MethodParameters;
 import me.zpp0196.reflectx.proxy.Source;
 
 /**
@@ -16,7 +16,7 @@ public interface IPerson extends IProxyClass {
     IPerson addPet(IAnimal animal);
 
     @Source("addPet")
-    @MemberParameters(IAnimal.class)
+    @MethodParameters(IAnimal.class)
     void addBirdPet(IBird bird);
 
 //    List<IAnimal> getPets2(); // 不支持

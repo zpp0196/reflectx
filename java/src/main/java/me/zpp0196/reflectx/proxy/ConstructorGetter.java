@@ -4,15 +4,13 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Constructor;
 
-/**
- * 声明原方法的参数类型
- */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.METHOD)
-public @interface MemberParameters {
+public @interface ConstructorGetter {
     /**
-     * @return 方法参数类型
+     * @return {@link Constructor#getParameterTypes()}
      */
-    Class[] value();
+    Class[] value() default {};
 }

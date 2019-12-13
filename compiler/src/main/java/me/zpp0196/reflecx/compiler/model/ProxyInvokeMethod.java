@@ -2,20 +2,15 @@ package me.zpp0196.reflecx.compiler.model;
 
 import com.squareup.javapoet.MethodSpec;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
-import me.zpp0196.reflectx.proxy.MemberParameters;
+import me.zpp0196.reflectx.proxy.MethodParameters;
 import me.zpp0196.reflectx.proxy.Source;
 
 /**
@@ -31,7 +26,7 @@ public class ProxyInvokeMethod extends BaseProxyMethod {
     public MethodSpec.Builder buildMethodSpec() {
         MethodSpec.Builder builder = super.buildMethodSpec();
         Source source = mElement.getAnnotation(Source.class);
-        MemberParameters srcParameters = mElement.getAnnotation(MemberParameters.class);
+        MethodParameters srcParameters = mElement.getAnnotation(MethodParameters.class);
         String methodName = "";
         if (source != null) {
             methodName = source.value();
@@ -65,7 +60,7 @@ public class ProxyInvokeMethod extends BaseProxyMethod {
         }
         if (srcParameters != null) {
             StringBuilder sb = new StringBuilder().append("new Class[]{");
-            List memberParameters = getMemberParameters(mElement);
+            List memberParameters = getMirrorClassArray(mElement, MethodParameters.class, "value");
             for (int i = 0; i < memberParameters.size(); i++) {
                 sb.append(memberParameters.get(i).toString());
                 if (i != memberParameters.size() - 1) {
@@ -82,37 +77,5 @@ public class ProxyInvokeMethod extends BaseProxyMethod {
             builder.addStatement(statement, returnType, methodName, types, args);
         }
         return builder;
-    }
-
-    private List getMemberParameters(Element element) {
-        List typeMirrors = new ArrayList<>();
-        try {
-            AnnotationMirror annotationMirror = getAnnotationMirror(element, MemberParameters.class);
-            AnnotationValue value = getAnnotationValue(annotationMirror, "value");
-            typeMirrors = (List) value.getValue();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return typeMirrors;
-    }
-
-    private AnnotationMirror getAnnotationMirror(Element element, Class<?> clazz) {
-        String clazzName = clazz.getName();
-        for (AnnotationMirror m : element.getAnnotationMirrors()) {
-            if (m.getAnnotationType().toString().equals(clazzName)) {
-                return m;
-            }
-        }
-        throw new IllegalArgumentException();
-    }
-
-    private AnnotationValue getAnnotationValue(AnnotationMirror annotationMirror, String key) {
-        for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry :
-                annotationMirror.getElementValues().entrySet()) {
-            if (entry.getKey().getSimpleName().toString().equals(key)) {
-                return entry.getValue();
-            }
-        }
-        throw new IllegalArgumentException();
     }
 }

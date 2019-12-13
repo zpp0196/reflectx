@@ -1,5 +1,6 @@
 package me.zpp0196.reflectx.proxy;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -90,9 +91,7 @@ public class BaseProxyClass implements IProxyClass {
      */
     protected final void set(Class<?> fieldType, String fieldName, Object value) {
         try {
-            getReflectUtils()
-                    .findFieldExact(getSourceClass(), getOriginalClass(fieldType), fieldName)
-                    .set(get(), value);
+            exactField(fieldType, fieldName).set(get(), value);
         } catch (IllegalAccessException e) {
             throw new ReflectException(e);
         }
@@ -105,12 +104,8 @@ public class BaseProxyClass implements IProxyClass {
      * @return {@link Field#get(Object)}
      */
     protected final <T> T get(Class<?> fieldType, String fieldName) {
-        if (fieldType == void.class) {
-            return null;
-        }
         try {
-            return (T) wrapper(getReflectUtils()
-                    .findFieldExact(getSourceClass(), getOriginalClass(fieldType), fieldName)
+            return (T) wrapper(exactField(fieldType, fieldName)
                     .get(get()), fieldType);
         } catch (IllegalAccessException e) {
             throw new ReflectException(e);
@@ -128,29 +123,45 @@ public class BaseProxyClass implements IProxyClass {
     protected final <T> T call(Class<?> returnType, String methodName,
             @Nullable Class<?>[] parameterTypes, @Nullable Object... args) {
         try {
-            Class<?>[] types = null;
-            if (parameterTypes != null) {
-                types = new Class[parameterTypes.length];
-                for (int i = 0; i < parameterTypes.length; i++) {
-                    types[i] = getOriginalClass(parameterTypes[i]);
-                }
-                new ProxyWrapper(types, args).unwrap();
-            }
             Method method;
-            Class<?> target = getSourceClass();
             try {
-                method = getReflectUtils()
-                        .findMethodExact(target, getOriginalClass(returnType), methodName, types);
+                method = exactMethod(returnType, methodName, parameterTypes);
             } catch (Throwable th) {
                 if (!returnType.isAssignableFrom(getClass())) {
                     throw th;
                 }
-                method = getReflectUtils()
-                        .findMethodExact(target, void.class, methodName, types);
+                method = exactMethod(void.class, methodName, parameterTypes);
             }
+            new ProxyWrapper(parameterTypes, args).unwrap();
             return (T) wrapper(method.invoke(get(), args), returnType);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new ReflectException(e);
+        }
+    }
+
+    protected Field exactField(Class<?> fieldType, String fieldName) {
+        fieldType = getOriginalClass(fieldType);
+        return getReflectUtils().findFieldExact(getSourceClass(), fieldType, fieldName);
+    }
+
+    protected Method exactMethod(Class<?> returnType, String fieldName, Class<?>... parameterTypes) {
+        unwrapParameterTypes(parameterTypes);
+        returnType = getOriginalClass(returnType);
+        return getReflectUtils()
+                .findMethodExact(getSourceClass(), returnType, fieldName, parameterTypes);
+    }
+
+    protected Constructor findConstructor(Class<?>... parameterTypes) {
+        unwrapParameterTypes(parameterTypes);
+        return getReflectUtils().findConstructor(getSourceClass(), parameterTypes);
+    }
+
+    private void unwrapParameterTypes(Class[] parameterTypes) {
+        if (parameterTypes == null) {
+            return;
+        }
+        for (int i = 0; i < parameterTypes.length; i++) {
+            parameterTypes[i] = getOriginalClass(parameterTypes[i]);
         }
     }
 

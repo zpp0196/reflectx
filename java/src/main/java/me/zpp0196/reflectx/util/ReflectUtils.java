@@ -7,7 +7,9 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@SuppressWarnings({"StringBufferReplaceableByString", "unchecked"})
+import me.zpp0196.reflectx.proxy.IgnoreType;
+
+@SuppressWarnings({"unchecked"})
 public class ReflectUtils implements IReflectUtils {
 
     public static class NoSuchMemberException extends RuntimeException {
@@ -78,6 +80,9 @@ public class ReflectUtils implements IReflectUtils {
 
     private Field findFieldExactImpl(Class<?> target, Class<?> fieldType, String fieldName,
             Class[] types) {
+        if (fieldType == void.class) {
+            throw new ReflectException("the type of the field cannot be void.class");
+        }
         Field field = null;
         try {
             field = target.getField(fieldName);
@@ -87,7 +92,7 @@ public class ReflectUtils implements IReflectUtils {
             } catch (NoSuchFieldException ignored) {
             }
         }
-        if (field != null && fieldType.isAssignableFrom(field.getType())) {
+        if (field != null && isTypeMatch(fieldType, field.getType())) {
             return field;
         }
         while (true) {
@@ -97,7 +102,7 @@ public class ReflectUtils implements IReflectUtils {
             }
             try {
                 field = target.getDeclaredField(fieldName);
-                if (fieldType.isAssignableFrom(field.getType())) {
+                if (isTypeMatch(fieldType, field.getType())) {
                     return field;
                 }
             } catch (NoSuchFieldException ignored) {
@@ -117,7 +122,7 @@ public class ReflectUtils implements IReflectUtils {
             } catch (NoSuchMethodException ignored) {
             }
         }
-        if (method != null && returnType.isAssignableFrom(method.getReturnType())) {
+        if (method != null && isTypeMatch(returnType, method.getReturnType())) {
             return method;
         }
         while (true) {
@@ -127,7 +132,7 @@ public class ReflectUtils implements IReflectUtils {
             }
             try {
                 method = target.getDeclaredMethod(methodName, parameterTypes);
-                if (returnType.isAssignableFrom(method.getReturnType())) {
+                if (isTypeMatch(returnType, method.getReturnType())) {
                     return method;
                 }
             } catch (NoSuchMethodException ignored) {
@@ -151,13 +156,14 @@ public class ReflectUtils implements IReflectUtils {
 
     private String getFieldFullName(Class<?> target, Class<?> fieldType, String fieldName,
             Class<?>[] types) {
-        return new StringBuilder()
+        StringBuilder sb = new StringBuilder()
                 .append(target.getCanonicalName())
                 .append("#")
-                .append(fieldName)
-                .append(":")
-                .append(fieldType.getCanonicalName())
-                .toString();
+                .append(fieldName);
+        if (!isIgnoreType(fieldType)) {
+            sb.append(":").append(fieldType.getCanonicalName());
+        }
+        return sb.toString();
     }
 
     private String getMethodFullName(Class<?> target, Class<?> returnType, String methodName,
@@ -176,9 +182,10 @@ public class ReflectUtils implements IReflectUtils {
                 }
             }
         }
-        sb.append(")")
-                .append(":")
-                .append(returnType.getCanonicalName());
+        sb.append(")");
+        if (!isIgnoreType(returnType)) {
+            sb.append(":").append(returnType.getCanonicalName());
+        }
         return sb.toString();
     }
 
@@ -198,6 +205,17 @@ public class ReflectUtils implements IReflectUtils {
             }
         }
         return sb.append(")").toString();
+    }
+
+    private boolean isTypeMatch(Class<?> expected, Class<?> original) {
+        if (isIgnoreType(expected)) {
+            return true;
+        }
+        return expected.isAssignableFrom(original);
+    }
+
+    private boolean isIgnoreType(Class<?> type) {
+        return type == IgnoreType.class;
     }
 
     private interface IMemberName {

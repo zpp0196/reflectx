@@ -8,6 +8,7 @@ import me.zpp0196.reflectx.demo.proxy.IAnimal;
 import me.zpp0196.reflectx.demo.proxy.IBird;
 import me.zpp0196.reflectx.demo.proxy.IFlightableProxy;
 import me.zpp0196.reflectx.demo.proxy.IFood;
+import me.zpp0196.reflectx.demo.proxy.IMemberDemo;
 import me.zpp0196.reflectx.demo.proxy.IPerson;
 import me.zpp0196.reflectx.proxy.ProxyClass;
 import me.zpp0196.reflectx.proxy.ProxyFactory;
@@ -43,6 +44,7 @@ public class JavaProxyTest {
         testGetterAndSetter();
         testCallMethod();
         testUpdateOriginal();
+        testGetMember();
     }
 
     @Test
@@ -109,5 +111,24 @@ public class JavaProxyTest {
         assertEquals(JERRY, tom.name());
         tom.set(null);
         assertNull(tom.get());
+    }
+
+    @Test
+    public void testGetMember() {
+        IMemberDemo memberDemo = IMemberDemo.proxy();
+        log(memberDemo.ctor_def());
+        log(memberDemo.ctor_withI());
+        log(memberDemo.field_TAG());
+        log(memberDemo.field_tag());
+        log(memberDemo.method_fun());
+        log(memberDemo.method_add());
+    }
+
+    private void log(String name, Object val) {
+        log(name + ": " + val);
+    }
+
+    private void log(Object msg) {
+        System.out.println("JavaProxyTest -> " + msg);
     }
 }
