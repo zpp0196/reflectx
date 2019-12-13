@@ -31,6 +31,7 @@ dependencies {
     implementation 'junit:junit:4.12'
     implementation project(path: ':xposed')
     annotationProcessor  project(path: ':compiler')
+//    def version_name = "master-SNAPSHOT"
 //    implementation "me.zpp0196:reflectx:${version_name}"
 //    annotationProcessor "me.zpp0196.reflectx:compiler:${version_name}"
 }
