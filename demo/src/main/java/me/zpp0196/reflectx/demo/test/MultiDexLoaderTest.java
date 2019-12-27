@@ -9,7 +9,7 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import me.zpp0196.reflectx.android.IProxyMapping;
+import me.zpp0196.reflectx.demo.proxy.IProxyMapping;
 import me.zpp0196.reflectx.proxy.ProxyClass;
 import me.zpp0196.reflectx.proxy.ProxyFactory;
 import me.zpp0196.reflectx.proxy.Source;

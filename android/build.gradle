@@ -23,5 +23,4 @@ android {
 dependencies {
     api project(path: ':java')
     api 'androidx.annotation:annotation:1.1.0'
-    annotationProcessor  project(path: ':compiler')
 }

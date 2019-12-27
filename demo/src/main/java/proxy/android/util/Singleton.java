@@ -1,4 +1,4 @@
-package me.zpp0196.reflectx.android.util;
+package proxy.android.util;
 
 import me.zpp0196.reflectx.proxy.IProxyClass;
 import me.zpp0196.reflectx.proxy.ProxyGetter;

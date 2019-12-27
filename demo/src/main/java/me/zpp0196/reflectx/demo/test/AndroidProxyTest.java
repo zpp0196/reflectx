@@ -8,12 +8,12 @@ import org.junit.Assert;
 
 import java.lang.reflect.Proxy;
 
-import me.zpp0196.reflectx.android.IProxyMapping;
-import me.zpp0196.reflectx.android.app.ActivityManager;
-import me.zpp0196.reflectx.android.app.ActivityManagerNative;
-import me.zpp0196.reflectx.android.app.ActivityThread;
-import me.zpp0196.reflectx.android.app.IActivityManager;
-import me.zpp0196.reflectx.android.util.Singleton;
+import me.zpp0196.reflectx.demo.proxy.IProxyMapping;
+import proxy.android.app.ActivityManager;
+import proxy.android.app.ActivityManagerNative;
+import proxy.android.app.ActivityThread;
+import proxy.android.app.IActivityManager;
+import proxy.android.util.Singleton;
 import me.zpp0196.reflectx.demo.proxy.IBuild;
 import me.zpp0196.reflectx.proxy.ProxyClass;
 import me.zpp0196.reflectx.proxy.ProxyFactory;
