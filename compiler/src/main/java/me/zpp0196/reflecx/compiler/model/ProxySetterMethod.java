@@ -7,6 +7,8 @@ import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 
+import me.zpp0196.reflectx.proxy.ProxySetter;
+
 /**
  * @author zpp0196
  */
@@ -23,7 +25,11 @@ public class ProxySetterMethod extends BaseProxyMethod {
             throw new IllegalArgumentException("methods decorated by ProxySetter must only have one argument");
         }
         VariableElement value = mElement.getParameters().get(0);
-        String fieldName = value.getSimpleName().toString();
+        ProxySetter getter = mElement.getAnnotation(ProxySetter.class);
+        String fieldName = getter.value();
+        if (fieldName.isEmpty()) {
+            fieldName = value.getSimpleName().toString();
+        }
         builder.addStatement("set($T.class,\"$L\",$L)", value, fieldName, fieldName);
         Name qualifiedName = ((TypeElement) mElement.getEnclosingElement()).getQualifiedName();
         if (qualifiedName.contentEquals(mElement.getReturnType().toString())) {
