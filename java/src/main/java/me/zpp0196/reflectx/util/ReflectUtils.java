@@ -88,19 +88,13 @@ public class ReflectUtils implements IReflectUtils {
         if (field != null && isTypeMatch(fieldType, field.getType())) {
             return field;
         }
-        while (true) {
-            target = target.getSuperclass();
-            if (target == null || target.equals(Object.class)) {
-                break;
-            }
-            try {
-                field = target.getDeclaredField(fieldName);
-                if (isTypeMatch(fieldType, field.getType())) {
-                    return field;
+        do {
+            for (Field declaredField : target.getDeclaredFields()) {
+                if (isTypeMatch(fieldType, declaredField.getType())) {
+                    return declaredField;
                 }
-            } catch (NoSuchFieldException ignored) {
             }
-        }
+        } while ((target = target.getSuperclass()) != null);
         return null;
     }
 
@@ -118,19 +112,13 @@ public class ReflectUtils implements IReflectUtils {
         if (method != null && isTypeMatch(returnType, method.getReturnType())) {
             return method;
         }
-        while (true) {
-            target = target.getSuperclass();
-            if (target == null || target.equals(Object.class)) {
-                break;
-            }
-            try {
-                method = target.getDeclaredMethod(methodName, parameterTypes);
-                if (isTypeMatch(returnType, method.getReturnType())) {
-                    return method;
+        do {
+            for (Method declaredMethod : target.getDeclaredMethods()) {
+                if (isTypeMatch(returnType, declaredMethod.getReturnType())) {
+                    return declaredMethod;
                 }
-            } catch (NoSuchMethodException ignored) {
             }
-        }
+        } while ((target = target.getSuperclass()) != null);
         return null;
     }
 
