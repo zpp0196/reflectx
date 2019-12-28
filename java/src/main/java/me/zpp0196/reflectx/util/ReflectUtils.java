@@ -90,7 +90,8 @@ public class ReflectUtils implements IReflectUtils {
         }
         do {
             for (Field declaredField : target.getDeclaredFields()) {
-                if (isTypeMatch(fieldType, declaredField.getType())) {
+                if (declaredField.getName().equals(fieldName) &&
+                        isTypeMatch(fieldType, declaredField.getType())) {
                     return declaredField;
                 }
             }
@@ -114,7 +115,8 @@ public class ReflectUtils implements IReflectUtils {
         }
         do {
             for (Method declaredMethod : target.getDeclaredMethods()) {
-                if (isTypeMatch(returnType, declaredMethod.getReturnType())) {
+                if (declaredMethod.getName().equals(methodName) &&
+                        isTypeMatch(returnType, declaredMethod.getReturnType())) {
                     return declaredMethod;
                 }
             }

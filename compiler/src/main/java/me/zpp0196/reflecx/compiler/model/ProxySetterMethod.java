@@ -27,10 +27,11 @@ public class ProxySetterMethod extends BaseProxyMethod {
         VariableElement value = mElement.getParameters().get(0);
         ProxySetter getter = mElement.getAnnotation(ProxySetter.class);
         String fieldName = getter.value();
+        String parameterName = value.getSimpleName().toString();
         if (fieldName.isEmpty()) {
-            fieldName = value.getSimpleName().toString();
+            fieldName = parameterName;
         }
-        builder.addStatement("set($T.class,\"$L\",$L)", value, fieldName, fieldName);
+        builder.addStatement("set($T.class,\"$L\",$L)", value, fieldName, parameterName);
         Name qualifiedName = ((TypeElement) mElement.getEnclosingElement()).getQualifiedName();
         if (qualifiedName.contentEquals(mElement.getReturnType().toString())) {
             builder.addStatement("return this");
