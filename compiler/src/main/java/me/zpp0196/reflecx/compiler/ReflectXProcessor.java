@@ -4,6 +4,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +26,7 @@ import me.zpp0196.reflectx.proxy.ProxyClass;
 import me.zpp0196.reflectx.proxy.ProxyClassImpl;
 import me.zpp0196.reflectx.proxy.ProxyClassMapping;
 import me.zpp0196.reflectx.proxy.Source;
+import me.zpp0196.reflectx.proxy.SourceClass;
 import me.zpp0196.reflecx.compiler.model.ProxyImplClass;
 import me.zpp0196.reflecx.compiler.model.ProxyClassMappingClass;
 
@@ -47,6 +49,7 @@ public class ReflectXProcessor extends AbstractProcessor {
         types.add(ProxyClassImpl.class.getCanonicalName());
         types.add(ProxyClassMapping.class.getCanonicalName());
         types.add(Source.class.getCanonicalName());
+        types.add(SourceClass.class.getCanonicalName());
         return types;
     }
 
@@ -102,7 +105,9 @@ public class ReflectXProcessor extends AbstractProcessor {
     }
 
     private boolean processProxyClass(RoundEnvironment env, TypeName proxyClassImpl) throws IOException {
-        Set<? extends Element> elements = env.getElementsAnnotatedWith(Source.class);
+        Set<Element> elements = new HashSet<>();
+        elements.addAll(env.getElementsAnnotatedWith(Source.class));
+        elements.addAll(env.getElementsAnnotatedWith(SourceClass.class));
         proxyClass:
         for (Element element : elements) {
             if (element.getKind() == ElementKind.METHOD) {

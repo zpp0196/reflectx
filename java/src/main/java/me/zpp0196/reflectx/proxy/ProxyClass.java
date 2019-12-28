@@ -108,6 +108,9 @@ public class ProxyClass {
         if (proxy == void.class || proxy.isPrimitive()) {
             return proxy;
         }
+        if (proxy.isAnnotationPresent(SourceClass.class)) {
+            return proxy.getAnnotation(SourceClass.class).value();
+        }
         String className = getSourceName(proxy);
         Class<?> clazz;
         try {
