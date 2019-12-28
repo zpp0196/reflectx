@@ -8,11 +8,11 @@ import org.junit.Assert;
 
 import java.lang.reflect.Proxy;
 
-import proxy.android.app.ActivityManager;
-import proxy.android.app.ActivityManagerNative;
-import proxy.android.app.ActivityThread;
 import proxy.android.app.IActivityManager;
-import proxy.android.util.Singleton;
+import proxy.android.app.IActivityManagerNative;
+import proxy.android.app.IActivityThread;
+import proxy.android.app.IIActivityManager;
+import proxy.android.util.ISingleton;
 import me.zpp0196.reflectx.demo.proxy.IBuild;
 import me.zpp0196.reflectx.proxy.ProxyClass;
 import me.zpp0196.reflectx.proxy.ProxyFactory;
@@ -42,7 +42,7 @@ public class AndroidProxyTest {
     }
 
     public void testActivityThread() {
-        ActivityThread am = ActivityThread.proxy();
+        IActivityThread am = IActivityThread.proxy();
         // class android.app.ActivityThread
         log("ActivityThread.class", am);
         am = am.currentActivityThread();
@@ -57,12 +57,12 @@ public class AndroidProxyTest {
     }
 
     public void testProxyActivityManager() {
-        Singleton singleton;
+        ISingleton singleton;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            ActivityManagerNative am = ProxyFactory.proxyClass(ActivityManagerNative.class);
+            IActivityManagerNative am = ProxyFactory.proxyClass(IActivityManagerNative.class);
             singleton = am.gDefault();
         } else {
-            ActivityManager am = ProxyFactory.proxyClass(ActivityManager.class);
+            IActivityManager am = ProxyFactory.proxyClass(IActivityManager.class);
             singleton = am.IActivityManagerSingleton();
         }
         Object instance = singleton.getInstance();
@@ -72,7 +72,7 @@ public class AndroidProxyTest {
 
     private Object getProxyActivityManager(Object original) {
         ClassLoader classLoader = original.getClass().getClassLoader();
-        Class[] interfaces = {ProxyClass.findClass(IActivityManager.class)};
+        Class[] interfaces = {ProxyClass.findClass(IIActivityManager.class)};
         return Proxy.newProxyInstance(classLoader, interfaces,
                 (proxy, method, args) -> {
                     log("ActivityManager.invoke", method.getName());

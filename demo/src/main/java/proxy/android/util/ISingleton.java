@@ -6,7 +6,7 @@ import me.zpp0196.reflectx.proxy.ProxySetter;
 import me.zpp0196.reflectx.proxy.Source;
 
 @Source("android.util.Singleton")
-public interface Singleton extends IProxyClass {
+public interface ISingleton extends IProxyClass {
     @ProxyGetter("mInstance")
     Object getInstance();
     @ProxySetter

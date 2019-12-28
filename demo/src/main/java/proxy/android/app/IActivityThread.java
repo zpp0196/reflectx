@@ -12,15 +12,15 @@ import me.zpp0196.reflectx.proxy.Source;
  * @author zpp0196
  */
 @Source("android.app.ActivityThread")
-public interface ActivityThread extends IProxyClass {
+public interface IActivityThread extends IProxyClass {
 
-    ActivityThread PROXY = ProxyFactory.proxyClass(ActivityThread.class);
+    IActivityThread PROXY = ProxyFactory.proxyClass(IActivityThread.class);
 
-    static ActivityThread proxy() {
+    static IActivityThread proxy() {
         return PROXY;
     }
 
-    ActivityThread currentActivityThread();
+    IActivityThread currentActivityThread();
 
     @Nullable
     String currentPackageName();
