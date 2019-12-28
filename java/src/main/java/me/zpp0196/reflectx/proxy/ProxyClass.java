@@ -19,14 +19,14 @@ public class ProxyClass {
         Class<? extends BaseProxyClass> get(Class<?> proxy);
     }
 
-    public static final String DEFAULT_MAPPING = "me.zpp0196.reflectx.proxy.ProxyClass$Mapping";
+    public static final String DEFAULT_CLASS_MAPPING = "me.zpp0196.reflectx.proxy.ProxyClass$ClassMapping";
     private static ClassLoader sDefaultLoader = ProxyClass.class.getClassLoader();
-    private static Set<IClassMapping> sClassMappingList = new HashSet<>();
-    private static Set<IProguardMapping> sProguardMappingList = new HashSet<>();
+    private static Set<IClassMapping> sClassMappingSet = new HashSet<>();
+    private static Set<IProguardMapping> sProguardMappingSet = new HashSet<>();
 
     static {
         try {
-            addClassMapping(DEFAULT_MAPPING);
+            addClassMapping(DEFAULT_CLASS_MAPPING);
         } catch (Throwable ignore) {
         }
     }
@@ -50,7 +50,7 @@ public class ProxyClass {
         try {
             for (String clazz : mappingClass) {
                 Class<?> clz = Class.forName(clazz);
-                sClassMappingList.add((IClassMapping) clz.newInstance());
+                sClassMappingSet.add((IClassMapping) clz.newInstance());
             }
         } catch (Exception e) {
             throw new ReflectException(e);
@@ -58,7 +58,7 @@ public class ProxyClass {
     }
 
     public static void addProguardMapping(IProguardMapping... proguardMappings) {
-        sProguardMappingList.addAll(Arrays.asList(proguardMappings));
+        sProguardMappingSet.addAll(Arrays.asList(proguardMappings));
     }
 
     /**
@@ -147,10 +147,10 @@ public class ProxyClass {
     }
 
     private static Set<IClassMapping> getClassMapping() {
-        if (sClassMappingList.isEmpty()) {
+        if (sClassMappingSet.isEmpty()) {
             throw new IllegalArgumentException("no mapping class was found");
         }
-        return sClassMappingList;
+        return sClassMappingSet;
     }
 
     @Nonnull
@@ -158,7 +158,7 @@ public class ProxyClass {
         String value = null;
         Source source = element.getAnnotation(Source.class);
         if (source != null) {
-            for (IProguardMapping mapping : sProguardMappingList) {
+            for (IProguardMapping mapping : sProguardMappingSet) {
                 if (mapping == null) {
                     continue;
                 }
@@ -167,7 +167,7 @@ public class ProxyClass {
                     break;
                 }
             }
-            if (sProguardMappingList.isEmpty()) {
+            if (sProguardMappingSet.isEmpty()) {
                 value = source.value();
             }
         }

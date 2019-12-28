@@ -1,4 +1,4 @@
-package me.zpp0196.reflecx.compiler.model;
+package me.zpp0196.reflectx.compiler.model;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;

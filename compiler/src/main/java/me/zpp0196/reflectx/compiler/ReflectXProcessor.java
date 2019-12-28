@@ -1,4 +1,4 @@
-package me.zpp0196.reflecx.compiler;
+package me.zpp0196.reflectx.compiler;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
@@ -27,8 +27,8 @@ import me.zpp0196.reflectx.proxy.ProxyClassImpl;
 import me.zpp0196.reflectx.proxy.ProxyClassMapping;
 import me.zpp0196.reflectx.proxy.Source;
 import me.zpp0196.reflectx.proxy.SourceClass;
-import me.zpp0196.reflecx.compiler.model.ProxyImplClass;
-import me.zpp0196.reflecx.compiler.model.ProxyClassMappingClass;
+import me.zpp0196.reflectx.compiler.model.ProxyImplClass;
+import me.zpp0196.reflectx.compiler.model.ProxyClassMappingClass;
 
 public class ReflectXProcessor extends AbstractProcessor {
 
@@ -91,7 +91,7 @@ public class ReflectXProcessor extends AbstractProcessor {
     }
 
     private String getProxyMapping(RoundEnvironment env) {
-        String defImpl = ProxyClass.DEFAULT_MAPPING;
+        String defImpl = ProxyClass.DEFAULT_CLASS_MAPPING;
         Set<? extends Element> elements = env.getElementsAnnotatedWith(ProxyClassMapping.class);
         if (elements.size() > 0) {
             for (Element element : elements) {
