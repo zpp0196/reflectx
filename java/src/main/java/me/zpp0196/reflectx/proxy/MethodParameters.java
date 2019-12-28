@@ -7,6 +7,8 @@ import java.lang.annotation.Target;
 
 /**
  * 声明原方法的参数类型
+ *
+ * @author zpp0196
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.METHOD)

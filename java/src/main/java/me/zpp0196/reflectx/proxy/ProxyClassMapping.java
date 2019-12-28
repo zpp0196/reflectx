@@ -7,6 +7,8 @@ import java.lang.annotation.Target;
 
 /**
  * 指定代理类映射表存放的 Class
+ *
+ * @author zpp0196
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.TYPE)
