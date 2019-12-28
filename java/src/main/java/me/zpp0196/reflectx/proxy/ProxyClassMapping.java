@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.TYPE)
-public @interface ProxyMapping {
+public @interface ProxyClassMapping {
     String value();
 }

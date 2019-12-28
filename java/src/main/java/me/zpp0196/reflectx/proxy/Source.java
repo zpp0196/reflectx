@@ -18,4 +18,14 @@ public @interface Source {
      * </ul>
      */
     String value() default "";
+
+    /**
+     * @return signature
+     */
+    String signature() default "";
+
+    /**
+     * @return hashcode
+     */
+    long hashcode() default -1;
 }

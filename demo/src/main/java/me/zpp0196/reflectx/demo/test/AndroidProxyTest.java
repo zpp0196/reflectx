@@ -8,7 +8,6 @@ import org.junit.Assert;
 
 import java.lang.reflect.Proxy;
 
-import me.zpp0196.reflectx.demo.proxy.IProxyMapping;
 import proxy.android.app.ActivityManager;
 import proxy.android.app.ActivityManagerNative;
 import proxy.android.app.ActivityThread;
@@ -31,7 +30,6 @@ public class AndroidProxyTest {
     }
 
     public void testAll() {
-        ProxyClass.addMappingClass(IProxyMapping.MAPPING);
         testActivityThread();
         testProxyActivityManager();
         testSetFinal();

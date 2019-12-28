@@ -21,12 +21,12 @@ import me.zpp0196.reflectx.Keep;
 import me.zpp0196.reflectx.proxy.BaseProxyClass;
 import me.zpp0196.reflectx.proxy.ProxyClass;
 
-public class ProxyMappingClass {
+public class ProxyClassMappingClass {
 
     private String mClassName;
     private static final Map<String, String> mMapping = new HashMap<>();
 
-    public ProxyMappingClass(String proxyMapping) {
+    public ProxyClassMappingClass(String proxyMapping) {
         mClassName = proxyMapping;
     }
 
@@ -40,7 +40,7 @@ public class ProxyMappingClass {
         TypeSpec.Builder classSpec = TypeSpec.classBuilder(simpleName)
                 .addAnnotation(Keep.class)
                 .addModifiers(Modifier.PUBLIC)
-                .addSuperinterface(ProxyClass.IMapping.class);
+                .addSuperinterface(ProxyClass.IClassMapping.class);
 
         ParameterizedTypeName baseProxyClass = ParameterizedTypeName.get(ClassName.get(Class.class),
                 WildcardTypeName.subtypeOf(TypeName.get(BaseProxyClass.class)));

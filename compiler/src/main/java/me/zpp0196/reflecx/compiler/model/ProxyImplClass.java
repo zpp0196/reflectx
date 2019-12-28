@@ -62,7 +62,7 @@ public class ProxyImplClass {
         }
     }
 
-    public JavaFile generateProxy(TypeName proxyClassImpl, ProxyMappingClass proxyMappingClass) {
+    public JavaFile generateProxy(TypeName proxyClassImpl, ProxyClassMappingClass mappingClass) {
         String packageName = getPackageName(mClassElement);
         String className = getClassName(mClassElement, packageName);
         ClassName proxyClassName = ClassName.get(packageName, className);
@@ -90,7 +90,8 @@ public class ProxyImplClass {
         proxyClassBuilder.addMethods(buildMethods());
         TypeSpec proxyClass = proxyClassBuilder.build();
 
-        proxyMappingClass.addMapping(sourceInterface.toString(), proxyClassName.toString() + "$Proxy");
+        mappingClass.addMapping(sourceInterface.toString(),
+                proxyClassName.toString() + "$Proxy");
         return JavaFile.builder(packageName, proxyClass).build();
     }
 

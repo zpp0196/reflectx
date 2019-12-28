@@ -12,7 +12,7 @@ import me.zpp0196.reflectx.demo.proxy.IMemberDemo;
 import me.zpp0196.reflectx.demo.proxy.IPerson;
 import me.zpp0196.reflectx.proxy.ProxyClass;
 import me.zpp0196.reflectx.proxy.ProxyFactory;
-import me.zpp0196.reflectx.proxy.ProxyMapping;
+import me.zpp0196.reflectx.proxy.ProxyClassMapping;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -20,7 +20,7 @@ import static org.junit.Assert.assertNull;
 /**
  * @author zpp0196
  */
-@ProxyMapping(JavaProxyTest.MAPPING)
+@ProxyClassMapping(JavaProxyTest.MAPPING)
 public class JavaProxyTest {
 
     static final String MAPPING = "a.b.c.d";
@@ -40,7 +40,7 @@ public class JavaProxyTest {
 
     @Test
     public void testAll() {
-        ProxyClass.addMappingClass(MAPPING);
+        ProxyClass.addClassMapping(MAPPING);
         testGetterAndSetter();
         testCallMethod();
         testUpdateOriginal();

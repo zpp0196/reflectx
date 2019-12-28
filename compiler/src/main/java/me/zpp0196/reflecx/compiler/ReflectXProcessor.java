@@ -23,16 +23,16 @@ import me.zpp0196.reflectx.proxy.BaseProxyClass;
 import me.zpp0196.reflectx.proxy.IProxyCallback;
 import me.zpp0196.reflectx.proxy.ProxyClass;
 import me.zpp0196.reflectx.proxy.ProxyClassImpl;
-import me.zpp0196.reflectx.proxy.ProxyMapping;
+import me.zpp0196.reflectx.proxy.ProxyClassMapping;
 import me.zpp0196.reflectx.proxy.Source;
 import me.zpp0196.reflecx.compiler.model.ProxyImplClass;
-import me.zpp0196.reflecx.compiler.model.ProxyMappingClass;
+import me.zpp0196.reflecx.compiler.model.ProxyClassMappingClass;
 
 public class ReflectXProcessor extends AbstractProcessor {
 
     private Elements mElements;
     private Filer mFiler;
-    private ProxyMappingClass mProxyMappingClass;
+    private ProxyClassMappingClass mProxyClassMappingClass;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
@@ -45,7 +45,7 @@ public class ReflectXProcessor extends AbstractProcessor {
     public Set<String> getSupportedAnnotationTypes() {
         LinkedHashSet<String> types = new LinkedHashSet<>();
         types.add(ProxyClassImpl.class.getCanonicalName());
-        types.add(ProxyMapping.class.getCanonicalName());
+        types.add(ProxyClassMapping.class.getCanonicalName());
         types.add(Source.class.getCanonicalName());
         return types;
     }
@@ -59,12 +59,12 @@ public class ReflectXProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         try {
             TypeName proxyClassImpl = getProxyClassImpl(roundEnvironment);
-            if (mProxyMappingClass == null) {
+            if (mProxyClassMappingClass == null) {
                 String proxyMapping = getProxyMapping(roundEnvironment);
-                mProxyMappingClass = new ProxyMappingClass(proxyMapping);
+                mProxyClassMappingClass = new ProxyClassMappingClass(proxyMapping);
             }
             if (processProxyClass(roundEnvironment, proxyClassImpl)) {
-                mProxyMappingClass.write(mFiler);
+                mProxyClassMappingClass.write(mFiler);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -89,14 +89,13 @@ public class ReflectXProcessor extends AbstractProcessor {
 
     private String getProxyMapping(RoundEnvironment env) {
         String defImpl = ProxyClass.DEFAULT_MAPPING;
-        Set<? extends Element> elements = env.getElementsAnnotatedWith(ProxyMapping.class);
+        Set<? extends Element> elements = env.getElementsAnnotatedWith(ProxyClassMapping.class);
         if (elements.size() > 0) {
             for (Element element : elements) {
                 if (element.getSimpleName().contentEquals(defImpl)) {
                     continue;
                 }
-                ProxyMapping proxyMapping = element.getAnnotation(ProxyMapping.class);
-                defImpl = proxyMapping.value();
+                defImpl = element.getAnnotation(ProxyClassMapping.class).value();
             }
         }
         return defImpl;
@@ -119,7 +118,7 @@ public class ReflectXProcessor extends AbstractProcessor {
                 }
             }
             new ProxyImplClass(element, mElements)
-                    .generateProxy(proxyClassImpl, mProxyMappingClass)
+                    .generateProxy(proxyClassImpl, mProxyClassMappingClass)
                     .writeTo(mFiler);
         }
         return elements.size() > 0;
