@@ -105,7 +105,7 @@ public class ProxyClass {
      */
     @Nonnull
     public static Class<?> findClass(Class<?> proxy, boolean initialize, ClassLoader loader) {
-        if (proxy == void.class || proxy.isPrimitive()) {
+        if (proxy == void.class || proxy == IgnoreType.class || proxy.isPrimitive()) {
             return proxy;
         }
         if (proxy.isAnnotationPresent(SourceClass.class)) {
