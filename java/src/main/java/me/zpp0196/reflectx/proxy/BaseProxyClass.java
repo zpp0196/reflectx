@@ -144,11 +144,11 @@ public class BaseProxyClass implements IProxyClass {
         return getReflectUtils().findFieldExact(getSourceClass(), fieldType, fieldName);
     }
 
-    protected Method exactMethod(Class<?> returnType, String fieldName, Class<?>... parameterTypes) {
+    protected Method exactMethod(Class<?> returnType, String methodName, Class<?>... parameterTypes) {
         unwrapParameterTypes(parameterTypes);
         returnType = getOriginalClass(returnType);
         return getReflectUtils()
-                .findMethodExact(getSourceClass(), returnType, fieldName, parameterTypes);
+                .findMethodExact(getSourceClass(), returnType, methodName, parameterTypes);
     }
 
     protected Constructor findConstructor(Class<?>... parameterTypes) {
