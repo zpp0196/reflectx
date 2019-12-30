@@ -81,25 +81,26 @@ public class ProxyBuilder {
      */
     public <P> P instance(Object... args) {
         Object instance = null;
-        try {
-            Class<?> sourceClass = ProxyClass.findClass(proxy, initialize, loader);
-            for (Constructor<?> constructor : sourceClass.getDeclaredConstructors()) {
-                ProxyWrapper wrapper = new ProxyWrapper(constructor.getParameterTypes(), args);
-                if (wrapper.unwrap()) {
+        Class<?> sourceClass = ProxyClass.findClass(proxy, initialize, loader);
+        for (Constructor<?> constructor : sourceClass.getDeclaredConstructors()) {
+            ProxyWrapper wrapper = new ProxyWrapper(constructor.getParameterTypes(), args);
+            if (wrapper.unwrap()) {
+                try {
                     instance = ReflectUtils.get().accessible(constructor).newInstance(args);
+                    break;
+                } catch (Exception ignored) {
                 }
             }
-            if (instance == null) {
-                throw new IllegalArgumentException("failed to create " + proxy);
-            }
-        } catch (Exception e) {
-            throw new ReflectException(e);
+        }
+        if (instance == null) {
+            throw new IllegalArgumentException("failed to create " + proxy);
         }
         return original(instance).proxy0();
     }
 
     /**
      * 代理 Object
+     *
      * @param <P> 代理接口类型
      * @return 代理接口
      */
