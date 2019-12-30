@@ -83,7 +83,7 @@ public class ProxyClass {
      */
     @Nonnull
     public static Class<?> findClass(Class<?> proxy) {
-        return findClass(proxy, true, getClassLoader());
+        return findClass(proxy, getClassLoader());
     }
 
     /**
@@ -93,7 +93,12 @@ public class ProxyClass {
      */
     @Nonnull
     public static Class<?> findClass(Class<?> proxy, ClassLoader loader) {
-        return findClass(proxy, true, loader);
+        boolean initialize = true;
+        Source source = proxy.getAnnotation(Source.class);
+        if (source != null) {
+            initialize = source.initialize();
+        }
+        return findClass(proxy, initialize, loader);
     }
 
     /**

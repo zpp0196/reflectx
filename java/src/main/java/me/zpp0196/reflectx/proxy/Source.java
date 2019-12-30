@@ -29,4 +29,10 @@ public @interface Source {
      * @return hashcode
      */
     long hashcode() default -1;
+
+    /**
+     * @return 加载被代理类时是否初始化
+     * @see ProxyClass#findClass(Class, ClassLoader)
+     */
+    boolean initialize() default true;
 }
