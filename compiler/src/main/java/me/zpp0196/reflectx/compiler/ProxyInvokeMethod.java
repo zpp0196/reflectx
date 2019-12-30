@@ -1,4 +1,4 @@
-package me.zpp0196.reflectx.compiler.model;
+package me.zpp0196.reflectx.compiler;
 
 import com.squareup.javapoet.MethodSpec;
 
@@ -16,7 +16,7 @@ import me.zpp0196.reflectx.proxy.Source;
 /**
  * @author zpp0196
  */
-public class ProxyInvokeMethod extends BaseProxyMethod {
+class ProxyInvokeMethod extends BaseProxyMethod {
 
     ProxyInvokeMethod(Element element) {
         super(element);

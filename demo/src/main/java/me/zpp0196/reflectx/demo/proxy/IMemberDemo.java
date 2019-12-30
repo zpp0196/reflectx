@@ -8,6 +8,7 @@ import me.zpp0196.reflectx.proxy.ConstructorGetter;
 import me.zpp0196.reflectx.proxy.FieldGetter;
 import me.zpp0196.reflectx.proxy.MethodGetter;
 import me.zpp0196.reflectx.proxy.ProxyFactory;
+import me.zpp0196.reflectx.proxy.RunWithCatch;
 import me.zpp0196.reflectx.proxy.Source;
 
 @Source("me.zpp0196.reflectx.demo.original.MemberDemo")
@@ -17,18 +18,21 @@ public interface IMemberDemo {
         return ProxyFactory.proxyClass(IMemberDemo.class);
     }
 
+    @RunWithCatch
     @ConstructorGetter
     Constructor ctor_def();
 
     @ConstructorGetter(int.class)
     Constructor ctor_withI();
 
+    @RunWithCatch
     @FieldGetter(type = String.class, value = "TAG")
     Field field_TAG();
 
     @FieldGetter(value = "tag")
     Field field_tag();
 
+    @RunWithCatch
     @MethodGetter(value = "fun")
     Method method_fun();
 

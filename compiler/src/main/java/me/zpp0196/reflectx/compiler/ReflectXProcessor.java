@@ -27,8 +27,6 @@ import me.zpp0196.reflectx.proxy.ProxyClassImpl;
 import me.zpp0196.reflectx.proxy.ProxyClassMapping;
 import me.zpp0196.reflectx.proxy.Source;
 import me.zpp0196.reflectx.proxy.SourceClass;
-import me.zpp0196.reflectx.compiler.model.ProxyImplClass;
-import me.zpp0196.reflectx.compiler.model.ProxyClassMappingClass;
 
 public class ReflectXProcessor extends AbstractProcessor {
 

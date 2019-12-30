@@ -1,4 +1,4 @@
-package me.zpp0196.reflectx.compiler.model;
+package me.zpp0196.reflectx.compiler;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -21,20 +21,20 @@ import me.zpp0196.reflectx.Keep;
 import me.zpp0196.reflectx.proxy.BaseProxyClass;
 import me.zpp0196.reflectx.proxy.ProxyClass;
 
-public class ProxyClassMappingClass {
+class ProxyClassMappingClass {
 
     private String mClassName;
     private static final Map<String, String> mMapping = new HashMap<>();
 
-    public ProxyClassMappingClass(String proxyMapping) {
+    ProxyClassMappingClass(String proxyMapping) {
         mClassName = proxyMapping;
     }
 
-    public void addMapping(String sourceInterface, String proxyName) {
+    void addMapping(String sourceInterface, String proxyName) {
         mMapping.put(sourceInterface, proxyName);
     }
 
-    public void write(Filer filer) {
+    void write(Filer filer) {
         String packageName = mClassName.substring(0, mClassName.lastIndexOf("."));
         String simpleName = mClassName.substring(packageName.length() + 1);
         TypeSpec.Builder classSpec = TypeSpec.classBuilder(simpleName)

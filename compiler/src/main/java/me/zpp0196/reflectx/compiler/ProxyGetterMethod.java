@@ -1,4 +1,4 @@
-package me.zpp0196.reflectx.compiler.model;
+package me.zpp0196.reflectx.compiler;
 
 import com.squareup.javapoet.MethodSpec;
 
@@ -9,7 +9,7 @@ import me.zpp0196.reflectx.proxy.ProxyGetter;
 /**
  * @author zpp0196
  */
-public class ProxyGetterMethod extends BaseProxyMethod {
+class ProxyGetterMethod extends BaseProxyMethod {
 
     ProxyGetterMethod(Element element) {
         super(element);

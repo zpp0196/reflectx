@@ -4,6 +4,7 @@ import java.util.List;
 
 import me.zpp0196.reflectx.proxy.IProxyClass;
 import me.zpp0196.reflectx.proxy.MethodParameters;
+import me.zpp0196.reflectx.proxy.RunWithCatch;
 import me.zpp0196.reflectx.proxy.Source;
 
 /**
@@ -13,6 +14,7 @@ import me.zpp0196.reflectx.proxy.Source;
 public interface IPerson extends IProxyClass {
     void feed(IAnimal animal, IFood food, IFood.EatingListener listener);
 
+    @RunWithCatch
     IPerson addPet(IAnimal animal);
 
     @Source("addPet")
@@ -20,5 +22,6 @@ public interface IPerson extends IProxyClass {
     void addBirdPet(IBird bird);
 
 //    List<IAnimal> getPets2(); // 不支持
+    @RunWithCatch
     List getPets();
 }

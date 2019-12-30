@@ -1,4 +1,4 @@
-package me.zpp0196.reflectx.compiler.model;
+package me.zpp0196.reflectx.compiler;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
@@ -27,7 +27,7 @@ import me.zpp0196.reflectx.proxy.ProxySetter;
 /**
  * @author zpp0196
  */
-public class ProxyImplClass {
+class ProxyImplClass {
 
     private TypeElement mClassElement;
 
@@ -35,7 +35,7 @@ public class ProxyImplClass {
 
     private Elements mElements;
 
-    public ProxyImplClass(Element element, Elements elements) {
+    ProxyImplClass(Element element, Elements elements) {
         this.mClassElement = (TypeElement) element;
         this.proxyMethods = new LinkedList<>();
         this.mElements = elements;
@@ -62,7 +62,7 @@ public class ProxyImplClass {
         }
     }
 
-    public JavaFile generateProxy(TypeName proxyClassImpl, ProxyClassMappingClass mappingClass) {
+    JavaFile generateProxy(TypeName proxyClassImpl, ProxyClassMappingClass mappingClass) {
         String packageName = getPackageName(mClassElement);
         String className = getClassName(mClassElement, packageName);
         ClassName proxyClassName = ClassName.get(packageName, className);
@@ -98,7 +98,7 @@ public class ProxyImplClass {
     private List<MethodSpec> buildMethods() {
         List<MethodSpec> methods = new ArrayList<>();
         for (BaseProxyMethod getter : proxyMethods) {
-            methods.add(getter.buildMethodSpec().build());
+            methods.add(getter.buildMethodSpecWithCatch().build());
         }
         return methods;
     }

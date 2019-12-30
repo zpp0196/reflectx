@@ -1,4 +1,4 @@
-package me.zpp0196.reflectx.compiler.model;
+package me.zpp0196.reflectx.compiler;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
@@ -18,12 +18,14 @@ import javax.lang.model.type.TypeMirror;
 /**
  * @author zpp0196
  */
-public abstract class BaseProxyMethod {
+abstract class BaseProxyMethod {
 
     ExecutableElement mElement;
+    private TryCatchBlock mCatchBlock;
 
     BaseProxyMethod(Element element) {
         mElement = (ExecutableElement) element;
+        mCatchBlock = new TryCatchBlock(mElement);
     }
 
     public MethodSpec.Builder buildMethodSpec() {
@@ -36,13 +38,20 @@ public abstract class BaseProxyMethod {
                     parameter.getSimpleName().toString());
         }
         builder.returns(ClassName.get(mElement.getReturnType()));
+        mCatchBlock.start(builder);
+        return builder;
+    }
+
+    public MethodSpec.Builder buildMethodSpecWithCatch() {
+        MethodSpec.Builder builder = buildMethodSpec();
+        mCatchBlock.end(builder);
         return builder;
     }
 
     protected TypeMirror getMirrorClass(Element element, Class<?> annotationClass, String key) {
         AnnotationMirror annotationMirror = getAnnotationMirror(element, annotationClass);
         AnnotationValue annotationValue = getAnnotationValue(annotationMirror, key);
-        return annotationValue == null ? null:  (TypeMirror) annotationValue.getValue();
+        return annotationValue == null ? null : (TypeMirror) annotationValue.getValue();
     }
 
     // TODO: 2019/12/12 0012 List<?>

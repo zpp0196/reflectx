@@ -1,4 +1,4 @@
-package me.zpp0196.reflectx.compiler.model;
+package me.zpp0196.reflectx.compiler;
 
 import com.squareup.javapoet.MethodSpec;
 
@@ -11,7 +11,7 @@ import me.zpp0196.reflectx.proxy.ConstructorGetter;
 /**
  * @author zpp0196
  */
-public class ConstructorInfoMethod extends BaseProxyMethod {
+class ConstructorInfoMethod extends BaseProxyMethod {
 
     ConstructorInfoMethod(Element element) {
         super(element);
