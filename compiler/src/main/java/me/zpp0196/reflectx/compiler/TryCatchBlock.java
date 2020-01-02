@@ -37,7 +37,6 @@ class TryCatchBlock {
         if (returnType.toString().equals(void.class.getName())) {
             return;
         }
-        System.out.println("mReturnType: " + mReturnType.toString());
         boolean appendPrimitive = appendReturn(builder, byte.class.getName(), RunWithCatch::byteValue) ||
                 appendReturn(builder, short.class.getName(), RunWithCatch::shortValue) ||
                 appendReturn(builder, int.class.getName(), RunWithCatch::intValue) ||
