@@ -21,7 +21,7 @@ public class MultiDexLoaderTest implements IXposedHookLoadPackage {
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-        ProxyClass.addClassMapping(JavaProxyTest.MAPPING);
+        ProxyClass.setClassMapping(a.b.c.d.class);
         XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

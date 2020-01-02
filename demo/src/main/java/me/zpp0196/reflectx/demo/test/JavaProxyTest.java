@@ -20,10 +20,8 @@ import static org.junit.Assert.assertNull;
 /**
  * @author zpp0196
  */
-@ProxyClassMapping(JavaProxyTest.MAPPING)
+@ProxyClassMapping("a.b.c.d")
 public class JavaProxyTest {
-
-    static final String MAPPING = "a.b.c.d";
 
     private static final String TOM = "Tom";
     private static final String JERRY = "Jerry";
@@ -40,7 +38,7 @@ public class JavaProxyTest {
 
     @Test
     public void testAll() {
-        ProxyClass.addClassMapping(MAPPING);
+        ProxyClass.setClassMapping(a.b.c.d.class);
         testGetterAndSetter();
         testCallMethod();
         testUpdateOriginal();

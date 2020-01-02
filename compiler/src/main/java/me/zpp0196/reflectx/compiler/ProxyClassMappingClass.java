@@ -17,7 +17,6 @@ import java.util.Map;
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.Modifier;
 
-import me.zpp0196.reflectx.Keep;
 import me.zpp0196.reflectx.proxy.BaseProxyClass;
 import me.zpp0196.reflectx.proxy.ProxyClass;
 
@@ -38,7 +37,6 @@ class ProxyClassMappingClass {
         String packageName = mClassName.substring(0, mClassName.lastIndexOf("."));
         String simpleName = mClassName.substring(packageName.length() + 1);
         TypeSpec.Builder classSpec = TypeSpec.classBuilder(simpleName)
-                .addAnnotation(Keep.class)
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(ProxyClass.IClassMapping.class);
 

@@ -2,9 +2,9 @@ package me.zpp0196.reflectx.proxy;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -19,14 +19,14 @@ public class ProxyClass {
         Class<? extends BaseProxyClass> get(Class<?> proxy);
     }
 
-    public static final String DEFAULT_CLASS_MAPPING = "me.zpp0196.reflectx.proxy.ProxyClass$ClassMapping";
+    public static final String DEFAULT_CLASS_MAPPING = ProxyClass.class.getName() + "$ClassMapping";
     private static ClassLoader sDefaultLoader = ProxyClass.class.getClassLoader();
-    private static Set<IClassMapping> sClassMappingSet = new HashSet<>();
-    private static Set<IProguardMapping> sProguardMappingSet = new HashSet<>();
+    private static IClassMapping sClassMapping = null;
+    private static List<IProguardMapping> sProguardMappingList = new ArrayList<>();
 
     static {
         try {
-            addClassMapping(DEFAULT_CLASS_MAPPING);
+            setClassMapping(DEFAULT_CLASS_MAPPING);
         } catch (Throwable ignore) {
         }
     }
@@ -45,20 +45,27 @@ public class ProxyClass {
      *
      * @param mappingClass 映射类
      * @see ProxyClassMapping
+     * @see #setClassMapping(Class)
      */
-    public static void addClassMapping(String... mappingClass) {
+    public static void setClassMapping(Class<? extends IClassMapping> mappingClass) {
         try {
-            for (String clazz : mappingClass) {
-                Class<?> clz = Class.forName(clazz);
-                sClassMappingSet.add((IClassMapping) clz.newInstance());
-            }
+            sClassMapping = mappingClass.newInstance();
+        } catch (Exception e) {
+            throw new ReflectException(e);
+        }
+    }
+
+    public static void setClassMapping(String mappingClass) {
+        try {
+            Class<?> clz = Class.forName(mappingClass);
+            sClassMapping = (IClassMapping) clz.newInstance();
         } catch (Exception e) {
             throw new ReflectException(e);
         }
     }
 
     public static void addProguardMapping(IProguardMapping... proguardMappings) {
-        sProguardMappingSet.addAll(Arrays.asList(proguardMappings));
+        sProguardMappingList.addAll(Arrays.asList(proguardMappings));
     }
 
     /**
@@ -143,19 +150,18 @@ public class ProxyClass {
      * @return 代理接口实现类
      */
     public static Class<? extends BaseProxyClass> getProxyImpl(@Nonnull Class<?> proxy) {
-        for (IClassMapping mapping : getClassMapping()) {
-            if (mapping.get(proxy) != null) {
-                return mapping.get(proxy);
-            }
+        Class<? extends BaseProxyClass> original = getClassMapping().get(proxy);
+        if (original != null) {
+            return original;
         }
         throw new IllegalArgumentException(proxy + "$Proxy was not found");
     }
 
-    private static Set<IClassMapping> getClassMapping() {
-        if (sClassMappingSet.isEmpty()) {
+    private static IClassMapping getClassMapping() {
+        if (sClassMapping == null) {
             throw new IllegalArgumentException("no mapping class was found");
         }
-        return sClassMappingSet;
+        return sClassMapping;
     }
 
     @Nonnull
@@ -163,7 +169,7 @@ public class ProxyClass {
         String value = null;
         Source source = element.getAnnotation(Source.class);
         if (source != null) {
-            for (IProguardMapping mapping : sProguardMappingSet) {
+            for (IProguardMapping mapping : sProguardMappingList) {
                 if (mapping == null) {
                     continue;
                 }
@@ -172,7 +178,7 @@ public class ProxyClass {
                     break;
                 }
             }
-            if (sProguardMappingSet.isEmpty()) {
+            if (sProguardMappingList.isEmpty()) {
                 value = source.value();
             }
         }
