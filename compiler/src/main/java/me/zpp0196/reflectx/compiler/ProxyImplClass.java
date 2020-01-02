@@ -43,7 +43,11 @@ class ProxyImplClass {
             if (methodElement.getKind() != ElementKind.METHOD) {
                 continue;
             }
-            if (methodElement.getAnnotation(ProxySetter.class) != null) {
+            if (methodElement.getModifiers().contains(Modifier.DEFAULT) ||
+                    methodElement.getModifiers().contains(Modifier.STATIC)) {
+                //noinspection UnnecessaryContinue
+                continue;
+            } else if (methodElement.getAnnotation(ProxySetter.class) != null) {
                 proxyMethods.add(new ProxySetterMethod(methodElement));
             } else if (methodElement.getAnnotation(ProxyGetter.class) != null) {
                 proxyMethods.add(new ProxyGetterMethod(methodElement));
@@ -53,9 +57,6 @@ class ProxyImplClass {
                 proxyMethods.add(new MethodInfoMethod(methodElement));
             } else if (methodElement.getAnnotation(ConstructorGetter.class) != null) {
                 proxyMethods.add(new ConstructorInfoMethod(methodElement));
-            } else if (methodElement.getModifiers().contains(Modifier.STATIC)) {
-                //noinspection UnnecessaryContinue
-                continue;
             } else {
                 proxyMethods.add(new ProxyInvokeMethod(methodElement));
             }

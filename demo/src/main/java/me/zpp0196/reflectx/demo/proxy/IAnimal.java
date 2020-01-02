@@ -28,4 +28,8 @@ public interface IAnimal extends IProxyClass {
     void eat(IFood food);
 
     void say(String msg);
+
+    default void sayHello() {
+        say("Hello");
+    }
 }

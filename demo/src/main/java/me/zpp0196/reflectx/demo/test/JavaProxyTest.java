@@ -73,6 +73,7 @@ public class JavaProxyTest {
         IAnimal cat = ProxyFactory.create(IAnimal.class);
         cat.setName(TOM);
         cat.say("hello");
+        cat.sayHello();
         IAnimal jerry = ProxyFactory.create(IAnimal.class);
         jerry.setName(JERRY);
 
