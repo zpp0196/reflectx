@@ -1,9 +1,7 @@
 apply plugin: 'java-library'
 
 dependencies {
-    implementation 'com.squareup:javapoet:1.8.0'
-    implementation project(path: ':core')
-    implementation project(path: ':annotations')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8

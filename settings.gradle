@@ -1,2 +1,2 @@
-include ':demo', ':xposed', ':java', ':android', ':test', ':compiler'
-rootProject.name='reflectx'
+include ':android', ':annotations', ':compiler', ':core', ':test'
+rootProject.name = 'reflectx'

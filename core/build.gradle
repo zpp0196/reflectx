@@ -1,0 +1,37 @@
+apply plugin: 'java-library'
+
+dependencies {
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation project(path: ':annotations')
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+task javadocs(type: Javadoc) {
+    source sourceSets.main.allJava
+    destinationDir = new File(buildDir, "docs")
+    classpath = sourceSets.main.compileClasspath
+    failOnError = false
+    excludes = ['**/generated/**']
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+}
+
+task javadocsIntoJar(type: Jar, dependsOn: javadocs) {
+    classifier = "javadoc"
+    from javadoc
+}
+
+artifacts {
+    archives javadocsIntoJar
+}
+
+javadoc {
+    options {
+        locale 'en_US'
+        encoding 'UTF-8'
+        charSet 'UTF-8'
+        links "http://docs.oracle.com/javase/8/docs/api"
+    }
+}
