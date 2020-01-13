@@ -50,11 +50,13 @@ public class MainActivity extends Activity {
 Download
 --------
 
+[![](https://jitpack.io/v/me.zpp0196/reflectx.svg)](https://jitpack.io/#me.zpp0196/reflectx)
+
 **project/build.gradle**
 
 ```groovy
 buildscript {
-    ext.reflectx_version = '0.1.0'
+    ext.reflectx_version = 'todo'
 }
 
 allprojects {
