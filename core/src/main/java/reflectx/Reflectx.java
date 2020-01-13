@@ -27,7 +27,7 @@ public class Reflectx {
     private static IProxyClassMapping sProxyClassMapping;
     private static IProguardMapping sProguardMapping;
     private static long sCurrentVersion = -1;
-    private static Map<Class<? extends IProxy>, Class<?>> sProxyClassMappingMap = new HashMap<>();
+    private static Map<Class<? extends IProxy>, Class<?>> sSourceClassMap = new HashMap<>();
 
     /**
      * If you need to support multiple versions, use {@link Sources}
@@ -35,7 +35,7 @@ public class Reflectx {
      *
      * @param proguardMapping Global proguard mapping.
      */
-    public static void setProguardMapping(IProguardMapping proguardMapping) {
+    public static void setProguardMapping(@Nonnull IProguardMapping proguardMapping) {
         sProguardMapping = proguardMapping;
     }
 
@@ -56,7 +56,7 @@ public class Reflectx {
      * @param classLoader Global default classloader.
      * @see #getProxyClassLoader()
      */
-    public static void setProxyClassLoader(ClassLoader classLoader) {
+    public static void setProxyClassLoader(@Nonnull ClassLoader classLoader) {
         sProxyClassLoader = classLoader;
     }
 
@@ -65,7 +65,7 @@ public class Reflectx {
      *
      * @param proxyClassMapping Implementation class.
      */
-    public static void setProxyClassMapping(IProxyClassMapping proxyClassMapping) {
+    public static void setProxyClassMapping(@Nonnull IProxyClassMapping proxyClassMapping) {
         sProxyClassMapping = proxyClassMapping;
     }
 
@@ -113,7 +113,7 @@ public class Reflectx {
 
     @Nullable
     @SuppressWarnings("unchecked")
-    public static Class<? extends IProxy> getProxyClass(Class<?> clazz) {
+    public static Class<? extends IProxy> getProxyClass(@Nonnull Class<?> clazz) {
         return isProxyClass(clazz) ? (Class<? extends IProxy>) clazz : null;
     }
 
@@ -123,6 +123,7 @@ public class Reflectx {
      * @param args The proxy interface method's arguments.
      * @return The original parameter types.
      */
+    @Nonnull
     public static Class<?>[] getProxyTypes(@Nullable Object... args) {
         Class<?>[] result = new Class<?>[0];
         if (args == null) {
@@ -146,8 +147,13 @@ public class Reflectx {
      * @param clazz The original interface.
      * @see #getSourceClass(Class, boolean, ClassLoader)
      */
-    public static void putSourceClass(Class<? extends IProxy> proxy, Class<?> clazz) {
-        sProxyClassMappingMap.put(proxy, clazz);
+    public static void putSourceClass(@Nonnull Class<? extends IProxy> proxy,
+            @Nonnull Class<?> clazz) {
+        sSourceClassMap.put(proxy, clazz);
+    }
+
+    public static void removeSourceClass(@Nonnull Class<? extends IProxy> proxy) {
+        sSourceClassMap.remove(proxy);
     }
 
     /**
@@ -186,12 +192,17 @@ public class Reflectx {
         if (proxy.isAnnotationPresent(SourceClass.class)) {
             return proxy.getAnnotation(SourceClass.class).value();
         }
-        if (sProxyClassMappingMap.containsKey(proxy)) {
-            return sProxyClassMappingMap.get(proxy);
+        if (sSourceClassMap.containsKey(proxy)) {
+            Class<?> clazz = sSourceClassMap.get(proxy);
+            if (clazz != null && clazz.getClassLoader() == loader) {
+                return clazz;
+            }
         }
         String className = getSourceName(proxy);
         try {
-            return Class.forName(className, initialize, loader);
+            Class<?> sourceClass = Class.forName(className, initialize, loader);
+            sSourceClassMap.put(proxy, sourceClass);
+            return sourceClass;
         } catch (ClassNotFoundException e) {
             throw new ReflectxException(e);
         }
