@@ -23,7 +23,8 @@ class GetFieldImpl extends BaseProxyMethod {
             fieldName = mElement.getSimpleName().toString();
         }
         MethodSpec.Builder builder = super.buildMethodSpec();
-        builder.addStatement("return get($T.class,$S)", mElement.getReturnType(), fieldName);
+        builder.addStatement("return get($L.class,$S)",
+                getTypeString(mElement.getReturnType()), fieldName);
         return builder;
     }
 }

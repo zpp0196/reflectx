@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.DeclaredType;
 
 import reflectx.annotations.CallMethod;
 
@@ -35,10 +34,8 @@ class CallMethodImpl extends BaseProxyMethod {
         if (returnType.toString().equals("void")) {
             builder.addCode("call(null");
         } else {
-            if (returnType instanceof DeclaredType) {
-                returnType = ((DeclaredType) returnType).asElement();
-            }
-            builder.addCode("return call(").addCode(CodeBlock.of("$L.class", returnType.toString()));
+            builder.addCode("return call(")
+                    .addCode(CodeBlock.of("$L.class", getTypeString(returnType)));
         }
 
         builder.addCode(",$S,new Class[]{", methodName);
@@ -54,7 +51,7 @@ class CallMethodImpl extends BaseProxyMethod {
             List<? extends VariableElement> parameters = mElement.getParameters();
             for (int i = 0; i < parameters.size(); i++) {
                 VariableElement parameter = parameters.get(i);
-                builder.addCode("$T.class", parameter.asType());
+                builder.addCode("$L.class", getTypeString(parameter.asType()));
                 if (i != parameters.size() - 1) {
                     builder.addCode(",");
                 }

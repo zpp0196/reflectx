@@ -10,6 +10,7 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -53,6 +54,16 @@ abstract class BaseProxyMethod {
         }
         AnnotationValue annotationValue = getAnnotationValue(annotationMirror, key);
         return annotationValue == null ? new ArrayList() : (List) annotationValue.getValue();
+    }
+
+    String getTypeString(Object type) {
+        if (type == null) {
+            return void.class.toString();
+        }
+        if (type instanceof DeclaredType) {
+            type = ((DeclaredType) type).asElement();
+        }
+        return type.toString();
     }
 
     private AnnotationMirror getAnnotationMirror(Element element, Class<?> clazz) {
