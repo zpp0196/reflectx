@@ -170,8 +170,8 @@ public class BaseProxyClass implements IProxyClass, IReflectUtils {
         return findMethodExact(requireSourceClass(), returnType, methodName, parameterTypes);
     }
 
-    protected Constructor constructor(@Nullable Class<?>... parameterTypes) {
-        return findConstructor(requireSourceClass(), parameterTypes);
+    protected <T> Constructor<T> constructor(@Nullable Class<?>... parameterTypes) {
+        return (Constructor<T>) findConstructor(requireSourceClass(), parameterTypes);
     }
 
     @Nonnull
