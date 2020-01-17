@@ -2,6 +2,7 @@ package reflectx.compiler;
 
 import com.squareup.javapoet.MethodSpec;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.lang.model.element.Element;
@@ -20,7 +21,14 @@ class FindMethodImpl extends BaseProxyMethod {
     @Override
     MethodSpec.Builder buildMethodSpec() {
         MethodSpec.Builder builder = super.buildMethodSpec();
-        builder.addCode("return method(");
+        builder.addCode("return ");
+        boolean wrapper = !mElement.getReturnType().toString().startsWith(Method.class.getName());
+        if (wrapper) {
+            builder.addCode("new $L(findMethodExactIfExists(requireSourceClass(),",
+                    mElement.getReturnType());
+        } else {
+            builder.addCode("method(");
+        }
         Object returnType = getMirrorClass(mElement, FindMethod.class, "returnType");
         if (returnType == null) {
             builder.addCode("null");
@@ -40,6 +48,10 @@ class FindMethodImpl extends BaseProxyMethod {
                 builder.addCode(",");
             }
         }
-        return builder.addCode("});\n");
+        builder.addCode("})");
+        if (wrapper) {
+            builder.addCode(",requireOriginal())");
+        }
+        return builder.addCode(";\n");
     }
 }

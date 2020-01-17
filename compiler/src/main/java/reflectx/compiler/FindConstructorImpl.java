@@ -2,6 +2,7 @@ package reflectx.compiler;
 
 import com.squareup.javapoet.MethodSpec;
 
+import java.lang.reflect.Constructor;
 import java.util.List;
 
 import javax.lang.model.element.Element;
@@ -20,7 +21,15 @@ class FindConstructorImpl extends BaseProxyMethod {
     @Override
     MethodSpec.Builder buildMethodSpec() {
         MethodSpec.Builder builder = super.buildMethodSpec();
-        builder.addCode("return constructor(new Class[]{");
+        builder.addCode("return ");
+        boolean wrapper = !mElement.getReturnType().toString()
+                .startsWith(Constructor.class.getName());
+        if (wrapper) {
+            builder.addCode("new $L(findConstructorIfExists(requireSourceClass()," +
+                    "new Class[]{", mElement.getReturnType());
+        } else {
+            builder.addCode("constructor(new Class[]{");
+        }
         List parameterTypes = getMirrorClassArray(mElement, FindConstructor.class, "value");
         for (int i = 0; i < parameterTypes.size(); i++) {
             builder.addCode(parameterTypes.get(i).toString());
@@ -28,6 +37,10 @@ class FindConstructorImpl extends BaseProxyMethod {
                 builder.addCode(",");
             }
         }
-        return builder.addCode("});\n");
+        builder.addCode("})");
+        if (wrapper) {
+            builder.addCode(")");
+        }
+        return builder.addCode(";\n");
     }
 }
