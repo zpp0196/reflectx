@@ -15,7 +15,7 @@ import reflectx.utils.ProxyWrapper;
  * @author zpp0196
  */
 @SuppressWarnings({"unchecked", "WeakerAccess"})
-public class BaseProxyClass implements IProxyClass {
+public class BaseProxyClass implements IProxyClass, IReflectUtils {
 
     @Nullable
     protected Object mOriginal;
@@ -162,21 +162,44 @@ public class BaseProxyClass implements IProxyClass {
     }
 
     protected Field field(@Nullable Class<?> fieldType, @Nonnull String fieldName) {
-        fieldType = getSourceClass(fieldType);
-        return getReflectUtils().findFieldExact(requireSourceClass(), fieldType, fieldName);
+        return findFieldExact(requireSourceClass(), fieldType, fieldName);
     }
 
     protected Method method(@Nullable Class<?> returnType, @Nonnull String methodName,
             @Nullable Class<?>... parameterTypes) {
+        return findMethodExact(requireSourceClass(), returnType, methodName, parameterTypes);
+    }
+
+    protected Constructor constructor(@Nullable Class<?>... parameterTypes) {
+        return findConstructor(requireSourceClass(), parameterTypes);
+    }
+
+    @Nonnull
+    @Override
+    public Field findFieldExact(@Nonnull Class<?> clazz, @Nullable Class<?> fieldType,
+            @Nonnull String fieldName) throws NoSuchMemberException {
+        fieldType = getSourceClass(fieldType);
+        return getReflectUtils().findFieldExact(requireSourceClass(), fieldType, fieldName);
+    }
+
+    @Nonnull
+    @Override
+    public Method findMethodExact(@Nonnull Class<?> clazz, @Nullable Class<?> returnType,
+            @Nonnull String methodName, @Nullable Class<?>... parameterTypes)
+            throws NoSuchMemberException {
         unwrapParameterTypes(parameterTypes);
         returnType = getSourceClass(returnType);
         return getReflectUtils().findMethodExact(requireSourceClass(),
                 returnType, methodName, parameterTypes);
     }
 
-    protected Constructor constructor(@Nullable Class<?>... parameterTypes) {
+    @Nonnull
+    @Override
+    public <T> Constructor<T> findConstructor(@Nonnull Class<T> clazz,
+            @Nullable Class<?>... parameterTypes) throws NoSuchMemberException {
         unwrapParameterTypes(parameterTypes);
-        return getReflectUtils().findConstructor(requireSourceClass(), parameterTypes);
+        return (Constructor<T>) getReflectUtils()
+                .findConstructor(requireSourceClass(), parameterTypes);
     }
 
     protected void unwrapParameterTypes(@Nullable Class[] parameterTypes) {

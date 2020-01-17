@@ -56,19 +56,10 @@ class ReflectUtils implements IReflectUtils {
 
     @Nonnull
     @Override
-    public <C> Constructor<C> findConstructor(@Nonnull Class<C> clazz,
+    public <T> Constructor<T> findConstructor(@Nonnull Class<T> clazz,
             @Nullable Class<?>... parameterTypes) throws NoSuchMemberException {
-        return (Constructor<C>) find(this::getConstructorFullName, this::findConstructorImpl,
+        return (Constructor<T>) find(this::getConstructorFullName, this::findConstructorImpl,
                 mConstructorCache, clazz, null, null, parameterTypes);
-    }
-
-    @Override
-    @Nonnull
-    public <T extends AccessibleObject> T accessible(@Nonnull T accessible) {
-        if (!accessible.isAccessible()) {
-            accessible.setAccessible(true);
-        }
-        return accessible;
     }
 
     @Nullable

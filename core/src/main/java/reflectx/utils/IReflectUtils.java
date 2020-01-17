@@ -30,7 +30,7 @@ public interface IReflectUtils {
             throws NoSuchMemberException;
 
     @Nonnull
-    <T> Constructor<?> findConstructor(@Nonnull Class<T> clazz,
+    <T> Constructor<T> findConstructor(@Nonnull Class<T> clazz,
             @Nullable Class<?>... parameterTypes) throws NoSuchMemberException;
 
     @Nullable
@@ -54,7 +54,7 @@ public interface IReflectUtils {
     }
 
     @Nullable
-    default <T> Constructor<?> findConstructorIfExists(@Nonnull Class<T> clazz,
+    default <T> Constructor<T> findConstructorIfExists(@Nonnull Class<T> clazz,
             @Nullable Class<?>... parameterTypes) {
         try {
             return findConstructor(clazz, parameterTypes);
@@ -64,7 +64,12 @@ public interface IReflectUtils {
     }
 
     @Nonnull
-    <T extends AccessibleObject> T accessible(@Nonnull T accessible);
+    default <T extends AccessibleObject> T accessible(@Nonnull T accessible) {
+        if (!accessible.isAccessible()) {
+            accessible.setAccessible(true);
+        }
+        return accessible;
+    }
 
     @Nonnull
     static IReflectUtils get() {
