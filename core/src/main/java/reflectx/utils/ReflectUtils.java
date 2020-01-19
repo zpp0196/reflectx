@@ -106,7 +106,8 @@ class ReflectUtils implements IReflectUtils {
         do {
             for (Method declaredMethod : clazz.getDeclaredMethods()) {
                 if (declaredMethod.getName().equals(methodName) &&
-                        isTypeMatch(returnType, declaredMethod.getReturnType())) {
+                        isTypeMatch(returnType, declaredMethod.getReturnType()) &&
+                        isTypesMatch(parameterTypes, declaredMethod.getParameterTypes())) {
                     return declaredMethod;
                 }
             }
@@ -123,9 +124,14 @@ class ReflectUtils implements IReflectUtils {
             try {
                 return clazz.getDeclaredConstructor(parameterTypes);
             } catch (NoSuchMethodException ignored) {
-                return null;
             }
         }
+        for (Constructor<?> declaredConstructor : clazz.getDeclaredConstructors()) {
+            if (isTypesMatch(parameterTypes, declaredConstructor.getParameterTypes())) {
+                return declaredConstructor;
+            }
+        }
+        return null;
     }
 
     @Nonnull
@@ -174,6 +180,22 @@ class ReflectUtils implements IReflectUtils {
             }
         }
         return sb.append(")");
+    }
+
+    private boolean isTypesMatch(@Nullable Class<?>[] expected, @Nullable Class<?>[] original) {
+        if (expected == null && original == null) {
+            return true;
+        }
+        if (expected == null || original == null) {
+            return false;
+        }
+
+        for (int i = 0; i < original.length; i++) {
+            if (!expected[i].isAssignableFrom(original[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean isTypeMatch(@Nullable Class<?> expected, @Nonnull Class<?> original) {

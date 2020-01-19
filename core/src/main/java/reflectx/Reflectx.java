@@ -131,7 +131,9 @@ public class Reflectx {
         }
         List<Class<?>> classes = new ArrayList<>();
         for (Object proxyArg : args) {
-            if (proxyArg instanceof IProxy) {
+            if (proxyArg == null) {
+                classes.add(Object.class);
+            } else if (proxyArg instanceof IProxy) {
                 classes.add(((IProxy) proxyArg).requireSourceClass());
             } else {
                 classes.add(proxyArg.getClass());
