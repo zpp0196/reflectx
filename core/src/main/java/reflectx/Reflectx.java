@@ -95,7 +95,7 @@ public class Reflectx {
     public static Class<?> findClassIfExists(@Nonnull String className) {
         try {
             return findClass(className);
-        } catch (ReflectxException e) {
+        } catch (Throwable ignored) {
             return null;
         }
     }
@@ -163,8 +163,18 @@ public class Reflectx {
      * @return The class being proxied.
      */
     @Nonnull
-    public static Class<?> getSourceClass(@Nonnull Class<? extends IProxy> proxy) {
+    public static Class<?> getSourceClass(@Nonnull Class<? extends IProxy> proxy)
+            throws ReflectxException {
         return getSourceClass(proxy, getProxyClassLoader());
+    }
+
+    @Nullable
+    public static Class<?> getSourceClassIfExists(@Nonnull Class<? extends IProxy> proxy) {
+        try {
+            return getSourceClass(proxy);
+        } catch (Throwable ignored) {
+            return null;
+        }
     }
 
     /**
@@ -174,8 +184,18 @@ public class Reflectx {
      */
     @Nonnull
     public static Class<?> getSourceClass(@Nonnull Class<? extends IProxy> proxy,
-            @Nonnull ClassLoader loader) {
+            @Nonnull ClassLoader loader) throws ReflectxException {
         return getSourceClass(proxy, proxy.isAnnotationPresent(Initialized.class), loader);
+    }
+
+    @Nullable
+    public static Class<?> getSourceClassIfExists(@Nonnull Class<? extends IProxy> proxy,
+            @Nonnull ClassLoader loader) {
+        try {
+            return getSourceClass(proxy, loader);
+        } catch (Throwable ignored) {
+            return null;
+        }
     }
 
     /**
@@ -190,7 +210,7 @@ public class Reflectx {
      */
     @Nonnull
     public static Class<?> getSourceClass(@Nonnull Class<? extends IProxy> proxy,
-            boolean initialize, @Nonnull ClassLoader loader) {
+            boolean initialize, @Nonnull ClassLoader loader) throws ReflectxException {
         if (proxy.isAnnotationPresent(SourceClass.class)) {
             return proxy.getAnnotation(SourceClass.class).value();
         }
@@ -207,6 +227,16 @@ public class Reflectx {
             return sourceClass;
         } catch (ClassNotFoundException e) {
             throw new ReflectxException(e);
+        }
+    }
+
+    @Nullable
+    public static Class<?> getSourceClassIfExists(@Nonnull Class<? extends IProxy> proxy,
+            boolean initialize, @Nonnull ClassLoader loader) {
+        try {
+            return getSourceClass(proxy, initialize, loader);
+        } catch (Throwable ignored) {
+            return null;
         }
     }
 
