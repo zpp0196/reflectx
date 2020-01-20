@@ -21,6 +21,12 @@ class FindMethodImpl extends BaseProxyMethod {
     @Override
     MethodSpec.Builder buildMethodSpec() {
         MethodSpec.Builder builder = super.buildMethodSpec();
+        FindMethod findMethod = mElement.getAnnotation(FindMethod.class);
+        String methodName = findMethod.value();
+        if (methodName.isEmpty()) {
+            methodName = mElement.getSimpleName().toString();
+        }
+        String name = buildSourceName(builder, methodName);
         builder.addCode("return ");
         boolean wrapper = !mElement.getReturnType().toString().startsWith(Method.class.getName());
         if (wrapper) {
@@ -35,12 +41,7 @@ class FindMethodImpl extends BaseProxyMethod {
         } else {
             builder.addCode("$T.class", returnType);
         }
-        FindMethod findMethod = mElement.getAnnotation(FindMethod.class);
-        String methodName = findMethod.value();
-        if (methodName.isEmpty()) {
-            methodName = mElement.getSimpleName().toString();
-        }
-        builder.addCode(",$S,new Class[]{", methodName);
+        builder.addCode(",$L,new Class[]{", name);
         List parameterTypes = getMirrorClassArray(mElement, FindMethod.class, "parameterTypes");
         for (int i = 0; i < parameterTypes.size(); i++) {
             builder.addCode(parameterTypes.get(i).toString());

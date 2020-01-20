@@ -29,6 +29,7 @@ class CallMethodImpl extends BaseProxyMethod {
         } else {
             methodName = mElement.getSimpleName().toString();
         }
+        String name = buildSourceName(builder, methodName);
         Object returnType = mElement.getReturnType();
 
         if (returnType.toString().equals("void")) {
@@ -38,7 +39,7 @@ class CallMethodImpl extends BaseProxyMethod {
                     .addCode(CodeBlock.of("$L.class", getTypeString(returnType)));
         }
 
-        builder.addCode(",$S,new Class[]{", methodName);
+        builder.addCode(",$L,new Class[]{", name);
         List parameterTypes = getMirrorClassArray(mElement, CallMethod.class, "parameterTypes");
         if (parameterTypes.size() > 0) {
             for (int i = 0; i < parameterTypes.size(); i++) {

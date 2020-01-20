@@ -10,20 +10,23 @@ import java.lang.annotation.Target;
  * This annotation serves two purposes:
  * <ul>
  * <li>Declare that the marked interface is a proxy interface.</li>
- * <li>Specify the name of the original class or method,
- * If the mark is on a method, it can only be treated as an annotation,
- * unless the method is in {@code reflectx.IProxyCallback}.</li>
+ * <li>Specify the name of the original class, field, or method.</li>
  * </ul>
  *
  * @author zpp0196
  * @see SourceClass
+ * @see SourceName
  */
 @Repeatable(Sources.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Source {
+
+    long DEFAULT_VERSION = Long.MIN_VALUE;
+    long DEFAULT_IDENTIFIES = Long.MIN_VALUE;
+
     /**
-     * @return The original class or method's name.
+     * @return The original class, field, or method's name.
      */
     String value() default "";
 
@@ -32,5 +35,10 @@ public @interface Source {
      *
      * @return Version code.
      */
-    long version() default -1;
+    long version() default DEFAULT_VERSION;
+
+    /**
+     * @return Globally unique identity.
+     */
+    long identifies() default DEFAULT_IDENTIFIES;
 }

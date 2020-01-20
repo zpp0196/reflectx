@@ -25,6 +25,8 @@ import reflectx.IProxyCallback;
 import reflectx.annotations.ProxyClassImpl;
 import reflectx.annotations.Source;
 import reflectx.annotations.SourceClass;
+import reflectx.annotations.SourceName;
+import reflectx.annotations.SourceNames;
 import reflectx.annotations.Sources;
 
 public final class ReflectxProcessor extends AbstractProcessor {
@@ -46,6 +48,8 @@ public final class ReflectxProcessor extends AbstractProcessor {
         types.add(ProxyClassImpl.class.getCanonicalName());
         types.add(Source.class.getCanonicalName());
         types.add(Sources.class.getCanonicalName());
+        types.add(SourceName.class.getCanonicalName());
+        types.add(SourceNames.class.getCanonicalName());
         types.add(SourceClass.class.getCanonicalName());
         return types;
     }
@@ -88,6 +92,8 @@ public final class ReflectxProcessor extends AbstractProcessor {
         Set<Element> elements = new HashSet<>();
         elements.addAll(env.getElementsAnnotatedWith(Source.class));
         elements.addAll(env.getElementsAnnotatedWith(Sources.class));
+        elements.addAll(env.getElementsAnnotatedWith(SourceName.class));
+        elements.addAll(env.getElementsAnnotatedWith(SourceNames.class));
         elements.addAll(env.getElementsAnnotatedWith(SourceClass.class));
         proxyClass:
         for (Element element : elements) {

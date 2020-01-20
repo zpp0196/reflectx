@@ -16,6 +16,7 @@ import reflectx.annotations.SourceClass;
 import reflectx.annotations.Sources;
 import reflectx.mapping.IProguardMapping;
 import reflectx.mapping.IProxyClassMapping;
+import reflectx.mapping.SourceMapping;
 
 /**
  * @author zpp0196
@@ -26,7 +27,7 @@ public class Reflectx {
     private static ClassLoader sProxyClassLoader = Reflectx.class.getClassLoader();
     private static IProxyClassMapping sProxyClassMapping;
     private static IProguardMapping sProguardMapping;
-    private static long sCurrentVersion = -1;
+    private static long sCurrentVersion = SourceMapping.DEFAULT_VERSION;
     private static Map<Class<? extends IProxy>, Class<?>> sSourceClassMap = new HashMap<>();
 
     /**
@@ -37,6 +38,10 @@ public class Reflectx {
      */
     public static void setProguardMapping(@Nonnull IProguardMapping proguardMapping) {
         sProguardMapping = proguardMapping;
+    }
+
+    public static IProguardMapping getProguardMapping() {
+        return sProguardMapping;
     }
 
     /**
@@ -252,10 +257,47 @@ public class Reflectx {
 
     @Nullable
     private static String getSourceName0(@Nonnull AnnotatedElement element) {
+        String sourceName = getSourceNameAtRuntime(element);
+        if (sourceName != null) {
+            return sourceName;
+        }
+
+        if (element instanceof Method) {
+            return ((Method) element).getName();
+        }
+        if (!(element instanceof Class<?>)) {
+            return null;
+        }
+        Class<? extends IProxy> proxyClass = getProxyClass((Class<?>) element);
+        if (proxyClass == null) {
+            return null;
+        }
+        IProxyClassMapping.Item item = getProxyClassMapping().get(proxyClass);
+        if (item == null) {
+            return null;
+        }
+        Map<Long, String> nameMapping = item.nameMapping;
+        if (nameMapping == null) {
+            return null;
+        }
+        if (nameMapping.containsKey(sCurrentVersion)) {
+            return nameMapping.get(sCurrentVersion);
+        }
+        long latestVersion = SourceMapping.DEFAULT_VERSION;
+        for (Long version : nameMapping.keySet()) {
+            if (version >= latestVersion) {
+                latestVersion = version;
+            }
+        }
+        return nameMapping.get(latestVersion);
+    }
+
+    @Nullable
+    private static String getSourceNameAtRuntime(@Nonnull AnnotatedElement element) {
         Sources sources = element.getAnnotation(Sources.class);
         Source source = null;
         if (sources != null) {
-            long latestVersion = -1;
+            long latestVersion = SourceMapping.DEFAULT_VERSION;
             for (Source s : sources.value()) {
                 if (s.version() >= latestVersion) {
                     latestVersion = s.version();
@@ -269,14 +311,19 @@ public class Reflectx {
         if (source == null) {
             source = element.getAnnotation(Source.class);
         }
-        if (source == null) {
-            return null;
+        if (source != null) {
+            if (sProguardMapping == null) {
+                return source.value();
+            }
+            String name = sProguardMapping.getSourceName(element, source.value());
+            if (name != null) {
+                return name;
+            }
+            return sProguardMapping.getSourceName(source.identifies(), source.value());
         }
-        if (sProguardMapping == null) {
-            return source.value();
-        }
-        return sProguardMapping.getSourceName(element, source.value(), source.version());
+        return null;
     }
+
 
     /**
      * @param clazz Class to judge.
@@ -288,13 +335,17 @@ public class Reflectx {
 
     @Nonnull
     static Class<? extends BaseProxyClass> getProxyImpl(@Nonnull Class<? extends IProxy> proxy) {
+        IProxyClassMapping.Item item = getProxyClassMapping().get(proxy);
+        if (item != null) {
+            return item.proxyImplClass;
+        }
+        throw new IllegalArgumentException(proxy + "$Proxy was not found");
+    }
+
+    private static IProxyClassMapping getProxyClassMapping() {
         if (sProxyClassMapping == null) {
             throw new IllegalArgumentException("no proxy class mapping was found");
         }
-        Class<? extends BaseProxyClass> original = sProxyClassMapping.get(proxy);
-        if (original != null) {
-            return original;
-        }
-        throw new IllegalArgumentException(proxy + "$Proxy was not found");
+        return sProxyClassMapping;
     }
 }

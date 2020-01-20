@@ -31,8 +31,9 @@ class SetFieldImpl extends BaseProxyMethod {
         if (fieldName.isEmpty()) {
             fieldName = parameterName;
         }
-        builder.addStatement("set($L.class,$S,$L)", getTypeString(arg0.asType()),
-                fieldName, parameterName);
+        String name = buildSourceName(builder, fieldName);
+        builder.addStatement("set($L.class,$L,$L)",
+                getTypeString(arg0.asType()), name, parameterName);
         Name qualifiedName = ((TypeElement) mElement.getEnclosingElement()).getQualifiedName();
         if (qualifiedName.contentEquals(mElement.getReturnType().toString())) {
             builder.addStatement("return this");

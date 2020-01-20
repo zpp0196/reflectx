@@ -21,6 +21,12 @@ class FindFieldImpl extends BaseProxyMethod {
     @Override
     MethodSpec.Builder buildMethodSpec() {
         MethodSpec.Builder builder = super.buildMethodSpec();
+        FindField findField = mElement.getAnnotation(FindField.class);
+        String fieldName = findField.value();
+        if (fieldName.isEmpty()) {
+            fieldName = mElement.getSimpleName().toString();
+        }
+        String name = buildSourceName(builder, fieldName);
         builder.addCode("return ");
         boolean wrapper = !mElement.getReturnType().toString().startsWith(Field.class.getName());
         if (wrapper) {
@@ -29,18 +35,13 @@ class FindFieldImpl extends BaseProxyMethod {
         } else {
             builder.addCode("field(");
         }
-        FindField findField = mElement.getAnnotation(FindField.class);
-        String fieldName = findField.value();
-        if (fieldName.isEmpty()) {
-            fieldName = mElement.getSimpleName().toString();
-        }
         TypeMirror fieldType = getMirrorClass(mElement, FindField.class, "type");
         if (fieldType == null) {
             builder.addCode("null");
         } else {
             builder.addCode("$T.class", fieldType);
         }
-        builder.addCode(",$S)", fieldName);
+        builder.addCode(",$L)", name);
         if (wrapper) {
             builder.addCode(",requireOriginal())");
         }

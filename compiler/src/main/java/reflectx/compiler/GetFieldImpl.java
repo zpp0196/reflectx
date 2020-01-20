@@ -17,14 +17,15 @@ class GetFieldImpl extends BaseProxyMethod {
 
     @Override
     MethodSpec.Builder buildMethodSpec() {
+        MethodSpec.Builder builder = super.buildMethodSpec();
         GetField getField = mElement.getAnnotation(GetField.class);
         String fieldName = getField.value();
         if (fieldName.isEmpty()) {
             fieldName = mElement.getSimpleName().toString();
         }
-        MethodSpec.Builder builder = super.buildMethodSpec();
-        builder.addStatement("return get($L.class,$S)",
-                getTypeString(mElement.getReturnType()), fieldName);
+        String name = buildSourceName(builder, fieldName);
+        builder.addStatement("return get($L.class,$L)",
+                getTypeString(mElement.getReturnType()), name);
         return builder;
     }
 }

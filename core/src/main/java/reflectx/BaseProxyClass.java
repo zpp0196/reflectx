@@ -4,10 +4,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import reflectx.mapping.IProguardMapping;
+import reflectx.mapping.SourceMapping;
 import reflectx.utils.IReflectUtils;
 import reflectx.utils.ProxyWrapper;
 
@@ -218,6 +221,25 @@ public class BaseProxyClass implements IProxyClass, IReflectUtils {
         }
         Class<? extends IProxy> proxyClass = Reflectx.getProxyClass(proxy);
         return proxyClass == null ? proxy : Reflectx.getSourceClass(proxyClass);
+    }
+
+    protected String getSourceName(@Nonnull String def,
+            @Nonnull List<SourceMapping> sourceMappings) {
+        long latestVersion = SourceMapping.DEFAULT_VERSION;
+        for (SourceMapping sourceMapping : sourceMappings) {
+            if (sourceMapping.version >= latestVersion) {
+                latestVersion = sourceMapping.version;
+                def = sourceMapping.value;
+            }
+            if (sourceMapping.version == Reflectx.getProguardVersion()) {
+                return sourceMapping.value;
+            }
+        }
+        IProguardMapping proguardMapping = Reflectx.getProguardMapping();
+        if (proguardMapping == null || sourceMappings.isEmpty()) {
+            return def;
+        }
+        return proguardMapping.getSourceName(sourceMappings.get(0).identifies, def);
     }
 
     /**
