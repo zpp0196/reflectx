@@ -263,7 +263,7 @@ public class BaseProxyClass implements IProxyClass, IReflectUtils {
             return this;
         }
         Class<?> resultClass = result.getClass();
-        if (expectType.isAssignableFrom(resultClass) || resultClass.isPrimitive() || !wrapper) {
+        if (expectType.isAssignableFrom(resultClass) || !wrapper) {
             return result;
         }
         Class<? extends IProxy> proxyClass = Reflectx.getProxyClass(expectType);

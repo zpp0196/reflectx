@@ -87,9 +87,10 @@ public class ProxyWrapper {
             Class<?> proxyType = proxyTypes[i];
             Object arg = args[i];
 
-            if (!srcType.isAssignableFrom(proxyType) || srcType.isPrimitive()) {
-                return false;
+            if (TypeUtils.box(srcType) == proxyType) {
+                continue;
             }
+
             args[i] = converter.convert(srcType, proxyType, arg);
         }
         return true;
