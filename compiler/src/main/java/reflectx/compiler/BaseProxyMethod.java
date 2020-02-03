@@ -43,7 +43,7 @@ abstract class BaseProxyMethod {
         Sources sources = mElement.getAnnotation(Sources.class);
         SourceName sourceName = mElement.getAnnotation(SourceName.class);
         SourceNames sourceNames = mElement.getAnnotation(SourceNames.class);
-        String name = "name";
+        String name = "name$" + System.currentTimeMillis();
         List<SourceMapping> mappingList = new ArrayList<>();
         if (sources != null) {
             for (Source s : sources.value()) {
