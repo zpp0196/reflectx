@@ -186,12 +186,12 @@ class ReflectUtils implements IReflectUtils {
         if (expected == null && original == null) {
             return true;
         }
-        if (expected == null || original == null) {
+        if (expected == null || original == null || expected.length != original.length) {
             return false;
         }
 
         for (int i = 0; i < original.length; i++) {
-            if (!expected[i].isAssignableFrom(original[i])) {
+            if (!isTypeMatch(expected[i], original[i])) {
                 return false;
             }
         }
