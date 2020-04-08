@@ -137,10 +137,10 @@ class ReflectUtils implements IReflectUtils {
     @Nonnull
     private StringBuilder getFieldFullName(@Nonnull Class<?> clazz, @Nullable Class<?> fieldType,
             @Nonnull String fieldName, @Null Class<?>[] types) {
-        StringBuilder sb = new StringBuilder().append(clazz.getCanonicalName())
+        StringBuilder sb = new StringBuilder().append(clazz.getName())
                 .append("#").append(fieldName);
         if (fieldType != null) {
-            sb.append(": ").append(fieldType.getCanonicalName());
+            sb.append(": ").append(fieldType.getName());
         }
         return sb;
     }
@@ -148,11 +148,11 @@ class ReflectUtils implements IReflectUtils {
     @Nonnull
     private StringBuilder getMethodFullName(@Nonnull Class<?> clazz, @Nullable Class<?> returnType,
             @Nonnull String methodName, @Nullable Class<?>[] parameterTypes) {
-        StringBuilder sb = new StringBuilder().append(clazz.getCanonicalName())
+        StringBuilder sb = new StringBuilder().append(clazz.getName())
                 .append("#").append(methodName);
         appendParameterTypes(sb, parameterTypes);
         if (returnType != null) {
-            sb.append(": ").append(returnType.getCanonicalName());
+            sb.append(": ").append(returnType.getName());
         }
         return sb;
     }
@@ -161,7 +161,7 @@ class ReflectUtils implements IReflectUtils {
     private StringBuilder getConstructorFullName(@Nonnull Class<?> clazz, @Null Class<?> type,
             @Null String name, @Nullable Class<?>[] parameterTypes) {
         return appendParameterTypes(
-                new StringBuilder().append(clazz.getCanonicalName()).append("#"),
+                new StringBuilder().append(clazz.getName()).append("#"),
                 parameterTypes
         );
     }
@@ -173,7 +173,7 @@ class ReflectUtils implements IReflectUtils {
         if (parameterTypes != null && parameterTypes.length > 0) {
             for (int i = 0; i < parameterTypes.length; i++) {
                 Class<?> parameter = parameterTypes[i];
-                sb.append(parameter.getCanonicalName());
+                sb.append(parameter.getName());
                 if (i != parameterTypes.length - 1) {
                     sb.append(", ");
                 }
