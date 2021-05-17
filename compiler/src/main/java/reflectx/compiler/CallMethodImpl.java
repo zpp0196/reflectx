@@ -40,7 +40,7 @@ class CallMethodImpl extends BaseProxyMethod {
         }
 
         builder.addCode(",$L,new Class[]{", name);
-        List parameterTypes = getMirrorClassArray(mElement, CallMethod.class, "parameterTypes");
+        List<?> parameterTypes = getMirrorClassArray(mElement, CallMethod.class, "parameterTypes");
         if (parameterTypes.size() > 0) {
             for (int i = 0; i < parameterTypes.size(); i++) {
                 builder.addCode(parameterTypes.get(i).toString());

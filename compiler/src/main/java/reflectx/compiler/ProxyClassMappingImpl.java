@@ -26,8 +26,8 @@ import reflectx.mapping.IProxyClassMapping;
 
 class ProxyClassMappingImpl {
 
-    private static final Map<String, String> mProxyClassMapping = new HashMap<>();
-    private static final Map<String, Element> mElementMapping = new HashMap<>();
+    private final Map<String, String> mProxyClassMapping = new HashMap<>();
+    private final Map<String, Element> mElementMapping = new HashMap<>();
 
     void addMapping(Element element, String sourceInterface, String proxyName) {
         mProxyClassMapping.put(sourceInterface, proxyName);

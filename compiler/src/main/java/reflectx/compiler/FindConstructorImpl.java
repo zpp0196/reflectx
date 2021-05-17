@@ -30,7 +30,7 @@ class FindConstructorImpl extends BaseProxyMethod {
         } else {
             builder.addCode("constructor(new Class[]{");
         }
-        List parameterTypes = getMirrorClassArray(mElement, FindConstructor.class, "value");
+        List<?> parameterTypes = getMirrorClassArray(mElement, FindConstructor.class, "value");
         for (int i = 0; i < parameterTypes.size(); i++) {
             builder.addCode(parameterTypes.get(i).toString());
             if (i != parameterTypes.size() - 1) {

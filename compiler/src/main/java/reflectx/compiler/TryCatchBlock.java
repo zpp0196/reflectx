@@ -14,9 +14,9 @@ import reflectx.annotations.RunWithCatch;
 
 class TryCatchBlock {
 
-    private ExecutableElement mElement;
-    private RunWithCatch mCatch;
-    private TypeMirror mReturnType;
+    private final ExecutableElement mElement;
+    private final RunWithCatch mCatch;
+    private final TypeMirror mReturnType;
 
     TryCatchBlock(ExecutableElement element) {
         this.mElement = element;

@@ -1,2 +1,2 @@
-include ':android', ':annotations', ':compiler', ':core', ':test'
+include ':annotations', ':compiler', ':core'
 rootProject.name = 'reflectx'

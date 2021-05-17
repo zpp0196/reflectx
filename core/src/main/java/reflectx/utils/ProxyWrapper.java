@@ -15,11 +15,11 @@ import reflectx.Reflectx;
 public class ProxyWrapper {
 
     @Nonnull
-    private Class<?>[] originalTypes;
+    private final Class<?>[] originalTypes;
     @Nonnull
-    private Class<?>[] proxyTypes;
+    private final Class<?>[] proxyTypes;
     @Nonnull
-    private Object[] args;
+    private final Object[] args;
 
     /**
      * @param originalTypes The original types.

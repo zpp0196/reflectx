@@ -42,7 +42,7 @@ class FindMethodImpl extends BaseProxyMethod {
             builder.addCode("$T.class", returnType);
         }
         builder.addCode(",$L,new Class[]{", name);
-        List parameterTypes = getMirrorClassArray(mElement, FindMethod.class, "parameterTypes");
+        List<?> parameterTypes = getMirrorClassArray(mElement, FindMethod.class, "parameterTypes");
         for (int i = 0; i < parameterTypes.size(); i++) {
             builder.addCode(parameterTypes.get(i).toString());
             if (i != parameterTypes.size() - 1) {

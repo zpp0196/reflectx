@@ -28,7 +28,7 @@ public class Reflectx {
     private static IProxyClassMapping sProxyClassMapping;
     private static IProguardMapping sProguardMapping;
     private static long sCurrentVersion = SourceMapping.DEFAULT_VERSION;
-    private static Map<Class<? extends IProxy>, Class<?>> sSourceClassMap = new HashMap<>();
+    private static final Map<Class<? extends IProxy>, Class<?>> sSourceClassMap = new HashMap<>();
 
     /**
      * If you need to support multiple versions, use {@link Sources}
@@ -323,7 +323,6 @@ public class Reflectx {
         }
         return null;
     }
-
 
     /**
      * @param clazz Class to judge.

@@ -30,11 +30,11 @@ import reflectx.annotations.SetField;
  */
 class ProxyClassImplImpl {
 
-    private TypeElement mClassElement;
+    private final TypeElement mClassElement;
 
-    private List<BaseProxyMethod> proxyMethods;
+    private final List<BaseProxyMethod> proxyMethods;
 
-    private Elements mElements;
+    private final Elements mElements;
 
     ProxyClassImplImpl(Element element, Elements elements) {
         this.mClassElement = (TypeElement) element;

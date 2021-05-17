@@ -15,7 +15,7 @@ import reflectx.utils.ProxyWrapper;
 class ProxyCallbackHandler implements InvocationHandler {
 
     @Nonnull
-    private Object mProxyImpl;
+    private final Object mProxyImpl;
 
     ProxyCallbackHandler(@Nonnull Object impl) {
         mProxyImpl = impl;

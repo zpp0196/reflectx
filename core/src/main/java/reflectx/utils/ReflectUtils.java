@@ -64,7 +64,7 @@ class ReflectUtils implements IReflectUtils {
 
     @Nullable
     private Field findFieldExactImpl(@Nonnull Class<?> clazz, @Nullable Class<?> fieldType,
-            @Nonnull String fieldName, @Null Class[] types) {
+            @Nonnull String fieldName, @Null Class<?>[] types) {
         Field field = null;
         try {
             field = clazz.getField(fieldName);
@@ -168,7 +168,7 @@ class ReflectUtils implements IReflectUtils {
 
     @Nonnull
     private StringBuilder appendParameterTypes(@Nonnull StringBuilder sb,
-            @Nullable Class[] parameterTypes) {
+            @Nullable Class<?>[] parameterTypes) {
         sb.append("(");
         if (parameterTypes != null && parameterTypes.length > 0) {
             for (int i = 0; i < parameterTypes.length; i++) {

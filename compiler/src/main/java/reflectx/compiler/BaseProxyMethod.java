@@ -24,8 +24,8 @@ import reflectx.mapping.SourceMapping;
  */
 abstract class BaseProxyMethod {
 
-    ExecutableElement mElement;
-    private reflectx.compiler.TryCatchBlock mCatchBlock;
+    final ExecutableElement mElement;
+    private final reflectx.compiler.TryCatchBlock mCatchBlock;
 
     BaseProxyMethod(Element element) {
         mElement = (ExecutableElement) element;
@@ -97,13 +97,13 @@ abstract class BaseProxyMethod {
         return annotationValue == null ? null : (TypeMirror) annotationValue.getValue();
     }
 
-    List getMirrorClassArray(Element element, Class<?> annotationClass, String key) {
+    List<?> getMirrorClassArray(Element element, Class<?> annotationClass, String key) {
         AnnotationMirror annotationMirror = getAnnotationMirror(element, annotationClass);
         if (annotationMirror == null) {
-            return new ArrayList();
+            return new ArrayList<>();
         }
         AnnotationValue annotationValue = getAnnotationValue(annotationMirror, key);
-        return annotationValue == null ? new ArrayList() : (List) annotationValue.getValue();
+        return annotationValue == null ? new ArrayList<>() : (List<?>) annotationValue.getValue();
     }
 
     String getTypeString(Object type) {

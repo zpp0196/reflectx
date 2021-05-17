@@ -21,10 +21,10 @@ import java.lang.reflect.Field;
 @Target(ElementType.METHOD)
 public @interface SetField {
     /**
-     * 被代理字段的 name
+     * The original field's name.
      *
      * @return {@link Field#getName()}
-     * <p>默认为当前方法名
+     * <p>If not specified, the name of the currently marked method is used by default.
      */
     String value() default "";
 }

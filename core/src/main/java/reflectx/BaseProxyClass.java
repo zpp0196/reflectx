@@ -24,7 +24,7 @@ public class BaseProxyClass implements IProxyClass, IReflectUtils {
     protected Object mOriginal;
     @Nullable
     protected Class<?> mSourceClass;
-    @SuppressWarnings("NullableProblems")
+    @SuppressWarnings("NotNullFieldNotInitialized")
     @Nonnull
     protected Class<? extends IProxy> mProxyInterface;
 
@@ -205,7 +205,7 @@ public class BaseProxyClass implements IProxyClass, IReflectUtils {
                 .findConstructor(requireSourceClass(), parameterTypes);
     }
 
-    protected void unwrapParameterTypes(@Nullable Class[] parameterTypes) {
+    protected void unwrapParameterTypes(@Nullable Class<?>[] parameterTypes) {
         if (parameterTypes == null) {
             return;
         }

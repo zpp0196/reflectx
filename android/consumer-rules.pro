@@ -1,2 +1,0 @@
--keepclassmembers,allowobfuscation class reflectx.** {*;}
--keepclassmembers,allowobfuscation class **.*$Proxy {*;}

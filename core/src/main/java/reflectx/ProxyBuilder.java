@@ -19,7 +19,7 @@ import reflectx.utils.ProxyWrapper;
 public class ProxyBuilder {
 
     @Nonnull
-    private Class<? extends IProxy> proxy;
+    private final Class<? extends IProxy> proxy;
     @Nullable
     private Object original;
     @Nonnull
