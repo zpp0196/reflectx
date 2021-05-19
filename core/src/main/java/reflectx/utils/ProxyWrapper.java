@@ -87,10 +87,6 @@ public class ProxyWrapper {
             Class<?> proxyType = proxyTypes[i];
             Object arg = args[i];
 
-            if (TypeUtils.box(srcType) == proxyType) {
-                continue;
-            }
-
             args[i] = converter.convert(srcType, proxyType, arg);
         }
         return true;
